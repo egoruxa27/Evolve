@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Задачи</h2>
+{% for task in task_list %}
+{{ task.title }}
+{{ task.description }}
+{{ task.status }}
+{% empty %}
+    У вас пока нет задач
+{% endfor %}
+{% endblock content %}
