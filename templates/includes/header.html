@@ -13,8 +13,8 @@
             </button>
         </form>
         {% comment %} создать css и обернуть в тег  {% endcomment %}
-        <a href="{% url 'users:profile' pk=request.user.pk %}" class='profile-link'>
+        <a href="{% url 'users:profile' %}" class='profile-link'>
         {{ request.user.nickname }}
-        <a>
+        </a>
     {% endif %}
 </div>

@@ -36,8 +36,8 @@ class LoginForm(AuthenticationForm):
     error_messages = {'invalid_login': 'Неверная почта или пароль'}
 
 
-# class EditProfileFrm(forms.ModelForm):
+class UpdateProfileForm(forms.ModelForm):
 
-#     class Meta:
-#         model = User
-#         fields = ['']
+    class Meta:
+        model = User
+        fields = ['nickname']

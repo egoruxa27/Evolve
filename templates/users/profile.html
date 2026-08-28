@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-Its a profile page
+<a href="{% url 'users:change_password' %}"> Сменить пароль </a>
+<a href="{% url 'users:change_profile' %}">изменить профиль </a>
 {% endblock %}
