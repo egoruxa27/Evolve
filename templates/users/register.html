@@ -1,11 +1,31 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% load static %}
+
 {% block content %}
-    <h2>Регистрация</h2>
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+
+<div class="auth-card">
+
     <form method="post" novalidate>
         {% csrf_token %}
-        <div>
-            {{ form }}
-        </div>
-        <button type="submit">Зарегистрироваться</button>
+
+        <h2>Регистрация</h2>
+
+        {{ form }}
+
+        <button type="submit">
+            Зарегистрироваться
+        </button>
     </form>
-{% endblock %}
+
+    <p>
+        Уже есть аккаунт?
+        <a href="{% url 'users:login' %}">
+            Войти
+        </a>
+    </p>
+
+</div>
+
+{% endblock content %}

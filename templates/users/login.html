@@ -1,19 +1,29 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% load static %}
+
 {% block content %}
-<h2>Авторизация</h2>
-<form method='post' novalidate>
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    {{ form.username.label_tag }}
-    {{ form.username }}
-    {{ form.username.errors }}
-    {{ form.password.label_tag }}
-    {{ form.password }}
-    {{ form.password.errors }}
-    <button type='submit'>Войти</button>
-</form>
-<form method="post" action="{% url 'users:logout' %}">
-    {% csrf_token %}
-    <button type="submit">Выйти</button>
-</form>
-{% endblock %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+
+<div class="auth-card">
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <h2>Авторизация</h2>
+
+        {{ form }}
+
+        <button type="submit">
+            Войти
+        </button>
+    </form>
+
+    <p>
+        Нет аккаунта?
+        <a href="{% url 'users:register' %}">
+            Зарегистрироваться
+        </a>
+    </p>
+</div>
+
+{% endblock content %}

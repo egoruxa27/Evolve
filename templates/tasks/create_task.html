@@ -1,8 +1,17 @@
 {% extends "base.html" %}
+
 {% block content %}
-<form method='Post' novalidate>
-    {% csrf_token %}
-    {{form}}
-    <button submit>Создать задачу</button>
-</form>
+
+<div class="auth-card">
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {{ form }}
+
+        <button type="submit">
+            Создать задачу
+        </button>
+    </form>
+</div>
+
 {% endblock content %}

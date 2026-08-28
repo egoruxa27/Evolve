@@ -1,11 +1,64 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% load static %}
+
 {% block content %}
-<h2>Задачи</h2>
-{% for task in task_list %}
-{{ task.title }}
-{{ task.description }}
-{{ task.status }}
-{% empty %}
-    У вас пока нет задач
-{% endfor %}
+<link rel="stylesheet" href="{% static 'css/tasks.css' %}">
+
+<div class='task-card'>
+    {% if is_history %}
+    <h2>История выполненых задач</h2>
+    {% else %}
+    <h2>Список задач</h2>
+    {% endif %}
+
+    <ul class="task-list">
+        {% for task in task_list %}
+            <li class="task-item">
+                <h3>{{ task.title }}</h3>
+                <p>{{ task.description }}</p>
+
+                <form
+                    method="POST"
+                    action="{% url 'tasks:change_status' task.pk %}"
+                >
+                    {% csrf_token %}
+
+                    <select name="status">
+                        {% for value, label in task.Status.choices %}
+                            <option
+                                value="{{ value }}"
+                                {% if task.status == value %}selected{% endif %}
+                            >
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">
+                        Изменить статус
+                    </button>
+                </form>
+            </li>
+
+        {% empty %}
+        <li>У вас пока нет{% if is_history %} выполненых {% endif %} задач</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'tasks:create' %}">Создать задачу</a>
+    {% if is_history %}
+    <a href="{% url 'tasks:list' %}">Список задач</a>
+    {% else %}
+    <a href="{% url 'tasks:history' %}">История выполненых задач</a>
+    {% endif %}
+</div>
+
+{% comment %} TO DO CSS class-pagination and make a normal html{% endcomment %}
+<div class="pagination">
+    {% for page in page_obj.paginator.page_range %}
+        <a href="?page={{ page }}">{{ page }}</a>
+    {% endfor %}
+</div>
+
 {% endblock content %}

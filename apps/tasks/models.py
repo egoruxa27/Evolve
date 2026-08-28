@@ -23,3 +23,7 @@ class Task(models.Model):
         choices=Status.choices,
         default=Status.NOT_STARTED
     )
+
+    class Meta:
+        verbose_name = 'Задача'
+        verbose_name_plural = 'Задачи'

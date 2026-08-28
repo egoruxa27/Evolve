@@ -1,0 +1,91 @@
+.task-card {
+    max-width: 500px;
+    margin: auto;
+    padding: 30px;
+}
+
+.task-card h2 {
+    text-align: center;
+}
+
+
+/* CSS FROM GPT /*
+
+/* body {
+    background-color: rgb(241, 245, 249);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.task-card {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 24px;
+
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.task-card h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0;
+}
+
+.task-item {
+    padding: 18px;
+    margin-bottom: 16px;
+
+    background-color: rgb(248, 250, 252);
+    border-radius: 12px;
+    border: 1px solid rgb(226, 232, 240);
+}
+
+.task-item h3 {
+    margin: 0 0 8px;
+}
+
+.task-item p {
+    margin: 0 0 16px;
+    color: rgb(71, 85, 105);
+}
+
+.task-item select {
+    padding: 8px 10px;
+    border: 1px solid rgb(203, 213, 225);
+    border-radius: 8px;
+}
+
+.task-item button {
+    padding: 8px 12px;
+    margin-left: 8px;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: rgb(99, 102, 241);
+    color: white;
+
+    cursor: pointer;
+}
+
+.task-item button:hover {
+    background-color: rgb(79, 82, 210);
+}
+
+.task-card > a {
+    display: inline-block;
+    margin-right: 16px;
+
+    color: rgb(79, 70, 229);
+    text-decoration: none;
+}
+
+.task-card > a:hover {
+    text-decoration: underline;
+} */

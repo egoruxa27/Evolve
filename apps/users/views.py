@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, DetailView
 
 from .forms import RegisterForm, LoginForm
 from django.urls import reverse_lazy, reverse
@@ -22,6 +22,11 @@ class RegisterCreateView(CreateView):
     form_class = RegisterForm
     template_name = 'users/register.html'
     success_url = reverse_lazy('users:login')
+
+
+class PrifileView(DetailView):
+    model = User
+    template_name = 'users/profile.html' # TO DO html and finish template_name
 
 
 # class UpdateProfileView(UpdateView):

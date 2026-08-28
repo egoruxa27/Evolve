@@ -1,0 +1,20 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/header.css' %}">
+
+<div class="header">
+    <a href="{% url 'tasks:list' %}" class='logo'>Evolve</a>
+
+    {% if request.user.is_authenticated %}
+        <form method="POST" action="{% url 'users:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class='logout-button'>
+                Выйти из аккаунта
+            </button>
+        </form>
+        {% comment %} создать css и обернуть в тег  {% endcomment %}
+        <a href="{% url 'users:profile' pk=request.user.pk %}" class='profile-link'>
+        {{ request.user.nickname }}
+        <a>
+    {% endif %}
+</div>

@@ -7,5 +7,7 @@ app_name = 'tasks'
 
 urlpatterns = [
     path('', views.TaskListView.as_view(), name='list'),
-    path('create/', views.CreateTaskView.as_view(), name='crete')
+    path('history/', views.TaskHistoryView.as_view(), name='history'),
+    path('create/', views.CreateTaskView.as_view(), name='create'),
+    path('<int:pk>/status/', views.UpdateTaskStatusView.as_view(), name='change_status'),
 ]

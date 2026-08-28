@@ -7,8 +7,14 @@ from django import forms
 User = get_user_model()
 
 class RegisterForm(UserCreationForm):
-    email = forms.EmailField(label='Введите адрес электронной почты')
-    nickname = forms.CharField(label='Придумайте свой никнейм')
+    email = forms.EmailField(
+        label='Введите адрес электронной почты',
+        error_messages={'unique': 'Пользователь с таким адрессом электронной почты уже существует'}
+    )
+    nickname = forms.CharField(
+        label='Придумайте свой никнейм',
+        error_messages={'unique': 'Пользователь с таким никнеймом уже существует.',}
+    )
 
     password1 = forms.CharField(label='Придумайте пароль', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Повторите пароль', widget=forms.PasswordInput)
@@ -16,6 +22,11 @@ class RegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['email', 'nickname']
+        error_messages = {
+            'nickname': {
+                'unique': 'Пользователь с таким никнеймом уже существует.',
+            },
+        }
 
 
 class LoginForm(AuthenticationForm):
