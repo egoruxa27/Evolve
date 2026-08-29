@@ -6,21 +6,21 @@
 <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 
 <div class="auth-card">
-    <form method="post" novalidate>
+    <form method="post" novalidate class="auth-form">
         {% csrf_token %}
 
-        <h2>Авторизация</h2>
+        <h2 class="auth-title">Авторизация</h2>
 
         {{ form }}
 
-        <button type="submit">
+        <button type="submit" class="auth-submit">
             Войти
         </button>
     </form>
 
-    <p>
+    <p class="auth-switch">
         Нет аккаунта?
-        <a href="{% url 'users:register' %}">
+        <a href="{% url 'users:register' %}" class="register-link">
             Зарегистрироваться
         </a>
     </p>

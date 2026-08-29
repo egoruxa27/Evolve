@@ -7,7 +7,7 @@
     align-items: center;
 
     box-sizing: border-box;
-    padding: 0 16px;
+    padding: 0 20px;
 
     position: relative;
     border-radius: 0 0 16px 16px;
@@ -40,5 +40,8 @@
 }
 
 .profile-link {
-    
+    margin-right: 16px;
+    margin-left: auto;
+
+    color: rgb(213, 89, 70);
 }
