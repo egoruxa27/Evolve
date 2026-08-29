@@ -7,21 +7,21 @@
 
 <div class="auth-card">
 
-    <form method="post" novalidate>
+    <form method="post" class='auth-form' novalidate>
         {% csrf_token %}
 
-        <h2>Регистрация</h2>
+        <h2 class='auth-title'>Регистрация</h2>
 
         {{ form }}
 
-        <button type="submit">
+        <button type="submit" class='auth-submit'>
             Зарегистрироваться
         </button>
     </form>
 
     <p>
         Уже есть аккаунт?
-        <a href="{% url 'users:login' %}">
+        <a href="{% url 'users:login' %}" class='register-link'>
             Войти
         </a>
     </p>

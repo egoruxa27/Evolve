@@ -1,6 +1,6 @@
 .header {
     height: 80px;
-    background-color: rgb(38, 28, 20);
+    background-color: rgb(31, 29, 48);
     color: white;
 
     display: flex;
@@ -15,7 +15,7 @@
 }
 
 .logo {
-    color: rgb(255, 140, 50);
+    color: rgb(124, 92, 255);
     text-decoration: none;
 
     position: absolute;
@@ -43,5 +43,5 @@
     margin-right: 16px;
     margin-left: auto;
 
-    color: rgb(213, 89, 70);
+    color: rgb(155, 131, 255);
 }
