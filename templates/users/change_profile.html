@@ -1,8 +1,16 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
-<form method='POST' novalidate>
-    {% csrf_token %}
-    {{ form }}
-    <button type='submit'>тровиаырвма</button>
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+
+<div class='auth-card'>
+
+    <form method='POST' class='auth-form' novalidate>
+        {% csrf_token %}
+        {{ form }}
+        <button type='submit' class='auth-submit'>Изменить профиль</button>
+
+</div>
 {% endblock %}

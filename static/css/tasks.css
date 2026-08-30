@@ -79,6 +79,7 @@
     padding: 12px;
 
     text-align: center;
+    font-size: 15px;
 
     border: none;
     border-radius: 12px;
@@ -87,6 +88,15 @@
 
     cursor: pointer;
 
+}
+
+.tasks-empty {
+    padding: 30px 20px;
+
+    text-align: center;
+
+    color: rgb(181, 76, 60);
+    font-size: 16px;
 }
 
 .task-pagination {

@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block content %}
-<a href="{% url 'users:change_password' %}"> Сменить пароль </a>
-<a href="{% url 'users:change_profile' %}">изменить профиль </a>
+<link rel="stylesheet" href="{% static 'css/tasks.css' %}">
+
+<div class='task-card'>
+
+    <a href="{% url 'users:change_password' %}" class='task-select'> Сменить пароль </a>
+    <a href="{% url 'users:change_profile' %}" class='task-button'>изменить профиль </a>
+
+</div>
 {% endblock %}
