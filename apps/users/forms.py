@@ -22,11 +22,6 @@ class RegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['email', 'nickname']
-        error_messages = {
-            'nickname': {
-                'unique': 'Пользователь с таким никнеймом уже существует.',
-            },
-        }
 
 
 class LoginForm(AuthenticationForm):
