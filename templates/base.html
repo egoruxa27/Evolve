@@ -8,26 +8,13 @@
     <title>EVOLVE</title>
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    {% comment %}
-    подключить и сделать общий base-css,
-    специфичный css каждый в своем файле
-    {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    {% block extra_css %}{% endblock extra_css %}
 </head>
 
 <body>
 
     {% include 'includes/header.html' %}
-
-    {% comment %} {% if request.user.is_authenticated %}
-    <form method='POST' action='{% url 'users:logout' %}'>
-            {% csrf_token %}
-            <button tupe='submit'>
-                Выйти из аккаунта
-            </button>
-    </form>
-    {% endif %}
-
-    <a href="{% url 'tasks:list' %}"> главная страница</a> {% endcomment %}
 
 
     {% block content %}

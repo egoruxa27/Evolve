@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView 
+from django.views.generic import ListView, CreateView, DetailView
 from django.views import View
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -32,6 +32,14 @@ class TaskHistoryView(TaskListView):
             return context
 
 
+class TaskDetailView(LoginRequiredMixin, DetailView):
+    model = Task
+    template_name = 'tasks/task_detail.html'
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
+
+
 class UpdateTaskStatusView(LoginRequiredMixin, View):
     def post(self, request, pk):
         task = get_object_or_404(
@@ -46,7 +54,7 @@ class UpdateTaskStatusView(LoginRequiredMixin, View):
             task.status = form.cleaned_data['status']
             task.save(update_fields=['status'])
 
-        return redirect('tasks:history')
+        return redirect('tasks:list')
 
 
 class CreateTaskView(LoginRequiredMixin, CreateView):

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/tasks.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+
+TO DO: Сделать CSS, добавить функционала.
+
+<div class="task-card">
+
+    <h1>{{ task.title }}</h1>
+
+    <p>
+        {{ task.description }}
+    </p>
+
+    <p>
+        Дедлайн: {{ task.deadline }}
+    </p>
+
+    <p>
+        Дата создания: {{  task.created_at }}
+    </p>
+
+    <a href="{% url 'tasks:list' %}">
+        Назад к задачам
+    </a>
+
+</div>
+
+{% endblock %}

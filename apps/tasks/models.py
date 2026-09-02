@@ -23,6 +23,8 @@ class Task(models.Model):
         choices=Status.choices,
         default=Status.NOT_STARTED
     )
+    created_at = models.DateTimeField('Дата создания задачи', auto_now_add=True)
+    deadline = models.DateTimeField('Дедлайн')
 
     class Meta:
         verbose_name = 'Задача'

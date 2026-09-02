@@ -2,8 +2,11 @@
 
 {% load static %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/tasks.css' %}">
+{% endblock extra_css %}
+
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/tasks.css' %}">
 
 <div class='task-card'>
     {% if is_history %}
@@ -15,9 +18,12 @@
     <ul class="task-list">
         {% for task in task_list %}
             <li class="task-item">
-                <h3>{{ task.title }}</h3>
+                <a href="{% url 'tasks:detail' task.pk %}">
+                    <h3>{{ task.title }}</h3>
+                </a>
+                <a href="{% url 'tasks:detail' task.pk %}" class='task-description'>
                 <p>{{ task.description }}</p>
-
+                </a>
                 <form
                     method="POST"
                     action="{% url 'tasks:change_status' task.pk %}"
@@ -39,18 +45,20 @@
                         Изменить статус
                     </button>
                 </form>
+                <p>Дэдлайн до: {{ task.deadline }}</p>
             </li>
+            
 
         {% empty %}
-        <li class='tasks-empty'>У вас пока нет{% if is_history %} выполненых {% endif %} задач</li>
+        <li class='tasks-empty'>У вас пока нет{% if is_history %} выполненных {% endif %} задач</li>
         {% endfor %}
     </ul>
 
     {% if is_history %}
-    <a href="{% url 'tasks:list' %}">Список задач</a>
+    <a href="{% url 'tasks:list' %}" class='task-description'>Список задач</a>
     {% else %}
     <a href="{% url 'tasks:create' %}" class='task-create'>Создать задачу</a>
-    <a href="{% url 'tasks:history' %}">История выполненых задач</a>
+    <a href="{% url 'tasks:history' %}" class='task-description'>История выполненых задач</a>
     {% endif %}
 </div>
 

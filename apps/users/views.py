@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.views.generic import CreateView, UpdateView, DetailView
 
 from .forms import RegisterForm, LoginForm, UpdateProfileForm
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 
 User = get_user_model()
 
@@ -33,11 +33,16 @@ class PrifileView(DetailView):
         return self.request.user
 
 
+class ProfileUserView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = 'users/profile.html'
+
+
 class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
     template_name = 'users/change_password.html'
     success_url = reverse_lazy('users:profile')
     
-class UpdateProfileView(UpdateView):
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
     model = User
     template_name = 'users/change_profile.html'
     form_class = UpdateProfileForm

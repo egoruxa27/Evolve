@@ -4,6 +4,8 @@ from django.test import TestCase
 
 from .forms import LoginForm, RegisterForm
 
+# TODO: увеличить покрытие тестами, проверить view, и права доступа
+
 
 User = get_user_model()
 
@@ -72,6 +74,15 @@ class TestUserManager(TestCase):
 
         self.assertEqual(user.email, NORMALIZED_EMAIL)
 
+    def test_password_hasned(self):
+        user = User.objects.create_user(
+            email=NORMALIZED_EMAIL,
+            nickname=NICKNAME,
+            password=PASSWORD,
+        )
+        self.assertNotEqual(user.password, PASSWORD)
+        self.assertTrue(user.check_password(PASSWORD))
+
 
 class TestUserModel(TestCase):
     def test_email_is_unique(self):
@@ -135,6 +146,7 @@ class TestRegisterForm(TestCase):
         self.assertIn('password2', form.errors)
 
 
+
 class TestUserRegister(TestCase):
     def get_valid_data(self):
         return {
@@ -191,3 +203,4 @@ class TestUserAuthentication(TestCase):
         )
 
         self.assertIsNotNone(user)
+
