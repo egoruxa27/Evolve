@@ -18,4 +18,11 @@ urlpatterns = [
     path('', root_redirect),
     path('users/', include('apps.users.urls')),
     path('tasks/', include('apps.tasks.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()
+]
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )
+    urlpatterns += debug_toolbar_urls()

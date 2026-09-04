@@ -8,9 +8,15 @@
                 Выйти из аккаунта
             </button>
         </form>
-        {% comment %} создать css и обернуть в тег  {% endcomment %}
-        <a href="{% url 'users:profile' %}" class='profile-link'>
-        {{ request.user.nickname }}
+        <a href="{% url 'users:profile' %}" class="profile-link">
+            <span class="header-avatar" aria-hidden="true">
+                {% if request.user.avatar %}
+                    <img src="{{ request.user.avatar.url }}" alt="">
+                {% else %}
+                    {{ request.user.nickname|first|upper }}
+                {% endif %}
+            </span>
+            <span>{{ request.user.nickname }}</span>
         </a>
     {% endif %}
 </div>

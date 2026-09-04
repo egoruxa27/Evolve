@@ -35,4 +35,4 @@ class UpdateProfileForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['nickname']
+        fields = ['nickname', 'avatar']

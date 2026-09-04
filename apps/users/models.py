@@ -9,6 +9,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField('Никнейм', unique=True, max_length=30)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    avatar = models.ImageField('Аватарка', upload_to='avatars/', null=True, blank=True)
 
     objects = UserManager()
 

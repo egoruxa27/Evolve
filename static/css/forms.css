@@ -1,0 +1,142 @@
+.task-select {
+    width: 20%;
+    padding: 12px;
+
+    text-align: center;
+    font-size: 15px;
+
+    border: none;
+    border-radius: 12px;
+
+    background-color: rgb(141, 87, 189);
+
+    cursor: pointer;
+
+}
+
+.task-create {
+    margin: 10px;
+    width: 20%;
+    padding: 8px;
+
+    display: inline-block;
+
+    background-color: rgb(124, 92, 255);
+    border-radius: 5px;
+
+    text-align: center;
+    color: rgb(255, 255, 255);
+}
+
+.task-create:hover {
+    background-color: rgb(45, 190, 170);
+}
+
+.task-button {
+    width: 20%;
+    padding: 12px;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: rgb(124, 92, 255);
+    color: rgb(255, 255, 255);
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+}
+
+.task-button:hover {
+    background-color: rgb(45, 190, 170);
+}
+
+
+.form-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    color: rgb(85, 82, 100);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-layout input,
+.form-layout textarea,
+.form-layout select {
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+
+    border: none;
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 15px;
+
+    background-color: rgb(248, 247, 251);
+}
+
+.form-layout input:focus,
+.form-layout textarea:focus,
+.form-layout select:focus {
+    outline: 3px solid rgb(150, 52, 199);
+}
+
+.form-layout input[type="file"] {
+    padding: 10px;
+}
+
+.form-layout input[type="file"]::file-selector-button {
+    margin-right: 10px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: rgb(124, 92, 255);
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+
+.form-layout input[type="file"]::file-selector-button:hover {
+    background-color: rgb(45, 190, 170);
+}
+
+.form-help {
+    color: rgb(120, 116, 135);
+    font-size: 13px;
+}
+
+.form-error,
+.form-layout .errorlist {
+    margin: 0;
+    padding: 0;
+    color: rgb(239, 83, 80);
+    font-size: 13px;
+    list-style: none;
+}
+
+.form-submit {
+    padding: 10px;
+    width: 100%;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: rgb(124, 92, 255);
+    color: rgb(121, 26, 203);
+
+    font-size: 15px;
+
+    cursor: pointer;
+}

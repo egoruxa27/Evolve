@@ -3,17 +3,37 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
 {% endblock extra_css %}
 
 {% block content %}
 
-<div class='auth-card'>
+<main class="profile-card">
+    <div class='profile-avatar'>
+        {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="Аватар {{ user.nickname }}">
+        {% else %}
+            {{ user.nickname|first|upper}}
+        {% endif %}
+    </div>
+    <h1 class='profile-title'>Настройки пользователя</h1>
+    <p class='profile-name'>{{request.user.nickname}}</p>
+        <form method="POST" class="form-layout" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="form-field">
+                <span class="form-label">{{ form.nickname.label }}</span>
+                {{ form.nickname }}
+                {{ form.nickname.errors }}
+            </div>
 
-    <form method='POST' class='auth-form' novalidate>
-        {% csrf_token %}
-        {{ form }}
-        <button type='submit' class='auth-submit'>Изменить профиль</button>
-
-</div>
+            <div class="form-field">
+                <span class="form-label">{{ form.avatar.label }}</span>
+                {{ form.avatar }}
+                {{ form.avatar.errors }}
+                <small class="form-help">PNG, JPG или WEBP</small>
+            </div>
+            <button type="submit" class="form-submit">Изменить профиль</button>
+        </form>
+</main>
 {% endblock %}

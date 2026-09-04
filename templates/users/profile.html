@@ -10,7 +10,11 @@
 
 <main class="profile-card">
     <div class="profile-avatar" aria-hidden="true">
-        {{ user.nickname|first|upper }}
+        {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="Аватар {{ user.nickname }}">
+        {% else %}
+            {{ user.nickname|first|upper }}
+        {% endif %}
     </div>
 
     <h1 class="profile-title">Профиль</h1>

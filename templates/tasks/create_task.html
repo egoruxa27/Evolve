@@ -1,14 +1,27 @@
 {% extends "base.html" %}
 
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock extra_css %}
+
 {% block content %}
 
 <div class="auth-card">
-    <form method="post" novalidate>
+    <form method="post" class="form-layout" novalidate>
         {% csrf_token %}
 
-        {{ form }}
+        {% for field in form %}
+            <div class="form-field">
+                <span class="form-label">{{ field.label }}</span>
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
 
-        <button type="submit">
+        <button type="submit" class="form-submit">
             Создать задачу
         </button>
     </form>
