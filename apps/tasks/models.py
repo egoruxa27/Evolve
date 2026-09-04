@@ -9,6 +9,7 @@ class Task(models.Model):
         NOT_STARTED = 'not_started', 'Не начата'
         IN_PROGRESS = 'in_progress', 'В процессе'
         COMPLETED = 'completed', 'Выполнена'
+        FAILED = 'failed', 'Провалена'
 
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
