@@ -3,33 +3,37 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/tasks.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tasks_detail.css' %}">
 {% endblock extra_css %}
 
 {% block content %}
 
-TO DO: Сделать CSS, добавить функционала.
+<main class="task-detail-card">
+    <div class="task-detail-heading">
+        <span class="task-detail-label">Задача</span>
+        <h1>{{ task.title }}</h1>
+    </div>
 
-<div class="task-card">
+    <div class="task-detail-description">
+        <h2>Описание</h2>
+        <p>{{ task.description|default:"Описание не добавлено." }}</p>
+    </div>
 
-    <h1>{{ task.title }}</h1>
+    <dl class="task-detail-meta">
+        <div>
+            <dt>Дедлайн</dt>
+            <dd>{{ task.deadline }}</dd>
+        </div>
+        <div>
+            <dt>Дата создания</dt>
+            <dd>{{ task.created_at }}</dd>
+        </div>
+    </dl>
 
-    <p>
-        {{ task.description }}
-    </p>
-
-    <p>
-        Дедлайн: {{ task.deadline }}
-    </p>
-
-    <p>
-        Дата создания: {{  task.created_at }}
-    </p>
-
-    <a href="{% url 'tasks:list' %}">
+    <a href="{% url 'tasks:list' %}" class="task-detail-back">
+        <span aria-hidden="true">←</span>
         Назад к задачам
     </a>
-
-</div>
+</main>
 
 {% endblock %}

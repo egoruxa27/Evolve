@@ -1,0 +1,90 @@
+.profile-card {
+    max-width: 520px;
+    margin: 50px auto;
+    padding: 36px 30px;
+    box-sizing: border-box;
+
+    background-color: rgb(255, 255, 255);
+    color: rgb(85, 82, 100);
+
+    border: 1px solid rgb(225, 223, 233);
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(31, 29, 48, 0.08);
+
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgb(124, 92, 255);
+    border-radius: 50%;
+
+    color: rgb(255, 255, 255);
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.profile-title {
+    margin: 0;
+    color: rgb(35, 33, 48);
+    font-size: 28px;
+}
+
+.profile-name {
+    margin: 10px 0 28px;
+    color: rgb(155, 131, 255);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profile-button {
+    display: block;
+    padding: 12px 18px;
+    box-sizing: border-box;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.profile-button-primary {
+    background-color: rgb(124, 92, 255);
+    color: rgb(255, 255, 255);
+}
+
+.profile-button-primary:hover {
+    background-color: rgb(45, 190, 170);
+}
+
+.profile-button-secondary {
+    background-color: rgb(248, 247, 251);
+    border: 1px solid rgb(225, 223, 233);
+    color: rgb(85, 82, 100);
+}
+
+.profile-button-secondary:hover {
+    background-color: rgb(225, 223, 233);
+    color: rgb(35, 33, 48);
+}
+
+@media (max-width: 560px) {
+    .profile-card {
+        margin: 30px 16px;
+        padding: 30px 20px;
+    }
+}

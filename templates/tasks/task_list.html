@@ -22,7 +22,7 @@
                     <h3>{{ task.title }}</h3>
                 </a>
                 <a href="{% url 'tasks:detail' task.pk %}" class='task-description'>
-                <p>{{ task.description }}</p>
+                <p>{{ task.description|default:"Описание не добавлено." }}</p>
                 </a>
                 <form
                     method="POST"

@@ -3,18 +3,28 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/tasks.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock extra_css %}
 
 {% block content %}
 
-<div class='task-card'>
+<main class="profile-card">
+    <div class="profile-avatar" aria-hidden="true">
+        {{ user.nickname|first|upper }}
+    </div>
 
+    <h1 class="profile-title">Профиль</h1>
+    <p class="profile-name">{{ user.nickname }}</p>
+
+    <div class="profile-actions">
     {% if request.user == user %}
-        <a href="{% url 'users:change_password' %}" class='task-select'> Сменить пароль </a>
-        <a href="{% url 'users:change_profile' %}" class='task-button'>изменить профиль </a>
+        <a href="{% url 'users:change_profile' %}" class="profile-button profile-button-primary">
+            Изменить профиль
+        </a>
+        <a href="{% url 'users:change_password' %}" class="profile-button profile-button-secondary">
+            Сменить пароль
+        </a>
     {% endif %}
-    <p>Пользователь {{ user.nickname }}</p>
-
-</div>
+    </div>
+</main>
 {% endblock %}
