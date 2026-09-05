@@ -13,6 +13,10 @@
 }
 
 .task-detail-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
     padding-bottom: 22px;
     border-bottom: 1px solid rgb(225, 223, 233);
 }
@@ -20,11 +24,16 @@
 .task-detail-label {
     display: block;
     margin-bottom: 8px;
+
     color: rgb(155, 131, 255);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+}
+
+.task-detail-status {
+    text-align: right;
 }
 
 .task-detail-heading h1 {
@@ -89,4 +98,47 @@
 
 .task-detail-back:hover {
     color: rgb(45, 190, 170);
+}
+
+.task-detail-take-xp {
+    background-color: rgba(45, 190, 170, 0.1);
+    border-color: rgba(45, 190, 170, 0.35);
+    color: rgb(31, 139, 124);
+}
+
+.task-detail-lost-xp {
+    background-color: rgba(181, 76, 60, 0.1);
+    border-color: rgba(181, 76, 60, 0.35);
+    color: rgb(160, 63, 50);
+}
+
+.task-detail-xp {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 28px;
+    padding: 16px 18px;
+
+    border: 1px solid;
+    border-radius: 12px;
+    font-size: 15px;
+}
+
+.task-detail-xp-label {
+    font-weight: 600;
+}
+
+.task-detail-xp-value {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    flex-shrink: 0;
+
+    font-size: 18px;
+}
+
+.task-detail-xp-value > span {
+    font-size: 24px;
+    line-height: 1;
 }

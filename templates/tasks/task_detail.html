@@ -10,8 +10,15 @@
 
 <main class="task-detail-card">
     <div class="task-detail-heading">
-        <span class="task-detail-label">Задача</span>
-        <h1>{{ task.title }}</h1>
+        <div>
+            <span class="task-detail-label">Задача</span>
+            <h1>{{ task.title }}</h1>
+        </div>
+
+        <div class="task-detail-status">
+            <span class="task-detail-label">Статус</span>
+            <h1>{{ task.get_status_display }}</h1>
+        </div>
     </div>
 
     <div class="task-detail-description">
@@ -29,6 +36,23 @@
             <dd>{{ task.created_at }}</dd>
         </div>
     </dl>
+
+    {% if task.status == 'completed' %}
+    <div class="task-detail-xp task-detail-take-xp">
+        <span class="task-detail-xp-label">Полученный опыт</span>
+        <strong class="task-detail-xp-value">
+            <span>{{ task.xp_reward }}</span> XP
+        </strong>
+    </div>
+    {% else %}
+    <div class="task-detail-xp task-detail-lost-xp">
+        <span class="task-detail-xp-label">Потерянный опыт</span>
+        <strong class="task-detail-xp-value">
+            <span>{{ task.xp_reward }}</span> XP
+        </strong>
+    </div>
+    {% endif %}
+
 
     <a href="{% url 'tasks:list' %}" class="task-detail-back">
         <span aria-hidden="true">←</span>

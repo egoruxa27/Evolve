@@ -3,9 +3,11 @@ from django.views import View
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import get_user_model
 
 from .models import Task
-from .forms import CreateTaskForm, ChangeTaskStatusForm
+from .forms import CreateTaskForm
+from .services import complete_task
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -14,7 +16,12 @@ class TaskListView(LoginRequiredMixin, ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user).exclude(status='completed')
+        return (
+            Task.objects
+            .filter(user=self.request.user)
+            .exclude(status='completed')
+            .order_by('-created_at')
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -24,7 +31,11 @@ class TaskListView(LoginRequiredMixin, ListView):
 
 class TaskHistoryView(TaskListView):
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user, status='completed')
+        return (
+            Task.objects
+            .filter(user=self.request.user, status='completed')
+            .order_by('-completed_at')
+        )
 
     def get_context_data(self, **kwargs):
             context = super().get_context_data(**kwargs)
@@ -45,14 +56,10 @@ class UpdateTaskStatusView(LoginRequiredMixin, View):
         task = get_object_or_404(
             Task,
             pk=pk,
-            user = request.user
+            user=request.user
         )
 
-        form = ChangeTaskStatusForm(request.POST)
-
-        if form.is_valid():
-            task.status = form.cleaned_data['status']
-            task.save(update_fields=['status'])
+        complete_task(task, request.user)
 
         return redirect('tasks:list')
 

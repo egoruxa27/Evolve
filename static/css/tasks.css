@@ -44,6 +44,25 @@
     color: rgb(85, 82, 100);
 }
 
+.task-date {
+    margin: 12px 0 0;
+
+    color: rgb(110, 107, 125);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.task-deadline {
+    padding-top: 10px;
+
+    border-top: 1px solid rgb(225, 223, 233);
+}
+
+.task-completed-date {
+    color: rgb(76, 145, 89);
+    font-weight: 600;
+}
+
 .tasks-empty {
     padding: 30px 20px;
 

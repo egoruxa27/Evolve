@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -25,7 +26,19 @@ class Task(models.Model):
         default=Status.NOT_STARTED
     )
     created_at = models.DateTimeField('Дата создания задачи', auto_now_add=True)
-    deadline = models.DateTimeField('Дедлайн')
+    completed_at = models.DateTimeField(
+        'Дата выполнения задачи',
+        blank=True,
+        null=True
+    )
+    deadline = models.DateTimeField('Дедлайн')#validator не раньше сегодняшней даты
+    xp_reward = models.PositiveSmallIntegerField(
+        'Опыт',
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(100)
+        ]
+    )
 
     class Meta:
         verbose_name = 'Задача'

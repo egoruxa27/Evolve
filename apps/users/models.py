@@ -9,9 +9,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField('Никнейм', unique=True, max_length=30)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-
-    # add validator for jpeg, png, and validate avatar field in form
-    avatar = models.ImageField('Аватарка', upload_to='avatars/', null=True, blank=True)
+    avatar = models.ImageField(
+        'Аватарка',
+        upload_to='avatars/',
+        null=True,
+        blank=True
+    )
+    level = models.PositiveSmallIntegerField(
+        'Уровень пользователя',
+        default=1
+        )
+    xp_amount = models.PositiveIntegerField('Опыт пользователя', default=0)
 
     objects = UserManager()
 

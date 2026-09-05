@@ -32,7 +32,24 @@ class LoginForm(AuthenticationForm):
 
 
 class UpdateProfileForm(forms.ModelForm):
+    nickname = forms.CharField(label='Никнейм')
+    avatar = forms.ImageField(label='Аватарка', required=False)
 
     class Meta:
         model = User
         fields = ['nickname', 'avatar']
+
+
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get('avatar')
+
+        if not avatar:
+            return avatar
+
+        if avatar.size > 2 * 1024 * 1024:
+            raise forms.ValidationError(
+                'Размер не должен превыщать 2 МБ.'
+            )
+
+        return avatar
+    
