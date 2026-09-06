@@ -18,8 +18,7 @@ class TaskListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return (
             Task.objects
-            .filter(user=self.request.user)
-            .exclude(status='completed')
+            .filter(user=self.request.user, status__in=['not_started', 'in_progress'])
             .order_by('-created_at')
         )
 
@@ -33,7 +32,7 @@ class TaskHistoryView(TaskListView):
     def get_queryset(self):
         return (
             Task.objects
-            .filter(user=self.request.user, status='completed')
+            .filter(user=self.request.user, status__in=['completed', 'failed'])
             .order_by('-completed_at')
         )
 

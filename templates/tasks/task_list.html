@@ -22,11 +22,14 @@
                 <a href="{% url 'tasks:detail' task.pk %}">
                     <h3>{{ task.title }}</h3>
                 </a>
+                <span class="task-status task-status-{{ task.status }}">
+                    {{ task.get_status_display }}
+                </span>
                 <a href="{% url 'tasks:detail' task.pk %}" class='task-description'>
                 <p>{{ task.description|default:"Описание не добавлено." }}</p>
                 </a>
                 {% if is_history %}
-                    <p class="task-date task-completed-date">
+                    <p class="task-date task-completed-date task-date-{{ task.status }}">
                         Дата выполнения задачи: {{ task.completed_at }}
                     </p>
                 {% else %}

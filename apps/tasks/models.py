@@ -41,7 +41,20 @@ class Task(models.Model):
             MaxValueValidator(100)
         ]
     )
+    category = models.ForeignKey(
+        'Category',
+        verbose_name='Категория проекта',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='tasks'
+    )
 
     class Meta:
         verbose_name = 'Задача'
         verbose_name_plural = 'Задачи'
+
+
+class Category(models.Model):
+    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
+    category = models.CharField('Категория')

@@ -39,14 +39,21 @@
 
     {% if task.status == 'completed' %}
     <div class="task-detail-xp task-detail-take-xp">
-        <span class="task-detail-xp-label">Полученный опыт</span>
+        <span class="task-detail-xp-label">Полученный опыт за выполнения задачи вовремя</span>
+        <strong class="task-detail-xp-value">
+            <span>{{ task.xp_reward }}</span> XP
+        </strong>
+    </div>
+    {% elif task.status == 'failed' %}
+    <div class="task-detail-xp task-detail-lost-xp">
+        <span class="task-detail-xp-label">Не полученный опыт из за не соблюдение делайна</span>
         <strong class="task-detail-xp-value">
             <span>{{ task.xp_reward }}</span> XP
         </strong>
     </div>
     {% else %}
-    <div class="task-detail-xp task-detail-lost-xp">
-        <span class="task-detail-xp-label">Потерянный опыт</span>
+    <div class="task-detail-xp task-detail-potential-xp">
+        <span class="task-detail-xp-label">Возможная награда за выполнение задачи в срок</span>
         <strong class="task-detail-xp-value">
             <span>{{ task.xp_reward }}</span> XP
         </strong>

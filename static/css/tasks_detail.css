@@ -112,6 +112,12 @@
     color: rgb(160, 63, 50);
 }
 
+.task-detail-potential-xp {
+    background-color: rgba(194, 169, 74, 0.1);
+    border-color: rgba(194, 169, 74, 0.35);
+    color: rgb(126, 111, 45);
+}
+
 .task-detail-xp {
     display: flex;
     align-items: center;
