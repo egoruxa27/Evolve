@@ -20,6 +20,26 @@
     <h1 class="profile-title">Профиль</h1>
     <p class="profile-name">{{ user.nickname }}</p>
 
+    <section class="profile-progress" aria-label="Прогресс пользователя">
+        <div class="profile-progress-heading">
+            <span>Уровень {{ user.level }}</span>
+            <strong>{{ user.xp_amount }} / 100 XP</strong>
+        </div>
+        <div
+            class="profile-progress-bar"
+            role="progressbar"
+            aria-label="Опыт до следующего уровня"
+            aria-valuenow="{{ user.xp_amount }}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+        >
+            <span
+                class="profile-progress-value"
+                style="width: {{ user.xp_amount }}%;"
+            ></span>
+        </div>
+    </section>
+
     <div class="profile-actions">
     {% if request.user == user %}
         <a href="{% url 'users:change_profile' %}" class="profile-button profile-button-primary">

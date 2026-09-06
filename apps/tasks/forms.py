@@ -5,8 +5,8 @@ from .models import Task
 
 class CreateTaskForm(forms.ModelForm):
     xp_reward = forms.IntegerField(
-        label='Коллчество опыта за выполнения задачи',
-        help_text='значение должно быть в диапозоне от 1 до 100'
+        label='Количество опыта за выполнения задачи',
+        help_text='Значение должно быть в диапазоне от 1 до 100'
     )
     deadline = forms.DateTimeField(
         label='Дедлайн',

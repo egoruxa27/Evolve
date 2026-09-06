@@ -45,10 +45,57 @@
 }
 
 .profile-name {
-    margin: 10px 0 28px;
+    margin: 10px 0 22px;
     color: rgb(155, 131, 255);
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 600;
+}
+
+.profile-progress {
+    margin-bottom: 28px;
+    padding: 18px;
+
+    background-color: rgb(248, 247, 251);
+    border: 1px solid rgb(225, 223, 233);
+    border-radius: 12px;
+    text-align: left;
+}
+
+.profile-progress-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+
+    color: rgb(85, 82, 100);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.profile-progress-heading strong {
+    color: rgb(124, 92, 255);
+}
+
+.profile-progress-bar {
+    height: 10px;
+    overflow: hidden;
+
+    background-color: rgb(225, 223, 233);
+    border-radius: 999px;
+}
+
+.profile-progress-value {
+    display: block;
+    height: 100%;
+    max-width: 100%;
+
+    background: linear-gradient(
+        90deg,
+        rgb(124, 92, 255),
+        rgb(45, 190, 170)
+    );
+    border-radius: inherit;
+    transition: width 0.3s ease;
 }
 
 .profile-actions {
@@ -93,5 +140,11 @@
     .profile-card {
         margin: 30px 16px;
         padding: 30px 20px;
+    }
+
+    .profile-progress-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
     }
 }

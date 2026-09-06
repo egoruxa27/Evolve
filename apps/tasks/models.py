@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
+from .validators import validate_deadline
+
 
 User = get_user_model()
 
@@ -31,7 +33,7 @@ class Task(models.Model):
         blank=True,
         null=True
     )
-    deadline = models.DateTimeField('Дедлайн')#validator не раньше сегодняшней даты
+    deadline = models.DateTimeField('Дедлайн', validators=[validate_deadline])
     xp_reward = models.PositiveSmallIntegerField(
         'Опыт',
         validators=[
