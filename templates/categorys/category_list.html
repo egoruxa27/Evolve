@@ -1,27 +1,64 @@
-{% extends 'base.html'%}
+{% extends 'base.html' %}
 
 {% load static %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/tasks.css' %}">
+{% endblock extra_css %}
+
 {% block content %}
+<div class="category-page">
+    <div class="category-page-header">
+        <h1>Категории</h1>
+        <a href="{% url 'tasks:create_category' %}" class="category-create-button">Создать категорию</a>
+    </div>
 
-<h1>Все ваши категории</h1>
-{% for category in category_list %}
-    {{ category.name }}
-    {% for task in category.get_active_tasks %}
-        {{ task.title }},
-    {% empty %}
-        <p>В этой категории нет активных задач.</p>
-    {% endfor %}
-    <form method='POST' action="{% url 'tasks:delete_category' category.id %}" novalidate>
-        {% csrf_token %}
-        <button type=submit>Удалить эту категорию</button>
-    </form>
-    <a href="{% url 'tasks:update_category' category.id %}">
-        Изменить эту категорию
-    </a>
-{% endfor %}
-<p>
-<a href="{% url 'tasks:create_category' %}">Создать категорию</a>
-</p>
+    {% if category_list %}
+        <div class="category-list">
+            {% for category in category_list %}
+                <details class="category-panel">
+                    <summary>
+                        <span class="category-name">{{ category.name }}</span>
+                        <span class="category-task-count">{{ category.tasks.count }} задач</span>
+                    </summary>
 
+                    <div class="category-panel-body">
+                        <div class="category-actions">
+                            <a href="{% url 'tasks:update_category' category.pk %}" class="category-action-link category-edit-link">
+                                Изменить
+                            </a>
+                            <form method="POST" action="{% url 'tasks:delete_category' category.pk %}" class="category-delete-form">
+                                {% csrf_token %}
+                                <button type="submit" class="category-action-link category-delete-link">
+                                    Удалить
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="category-tasks">
+                            <h2>Задачи в категории</h2>
+                            {% if category.tasks.all %}
+                                <ul>
+                                    {% for task in category.tasks.all %}
+                                        <li>
+                                            <a href="{% url 'tasks:detail' task.pk %}">{{ task.title }}</a>
+                                            <span class="task-status task-status-{{ task.status }}">{{ task.get_status_display }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>В этой категории пока нет задач.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </details>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="category-empty">
+            <p>У вас пока нет категорий.</p>
+            <a href="{% url 'tasks:create_category' %}" class="category-create-button">Создать первую категорию</a>
+        </div>
+    {% endif %}
+</div>
 {% endblock content %}

@@ -91,16 +91,22 @@ class CreateTaskView(LoginRequiredMixin, CreateView):
 class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
     template_name = 'categorys/category_list.html'
+    context_object_name = 'category_list'
 
     def get_queryset(self):
-        return (Category.objects.filter(user=self.request.user))
+        return Category.objects.filter(user=self.request.user).order_by('name')
 
 
 class CreateCategoryView(LoginRequiredMixin, CreateView):
     model = Category
     form_class = CategoryForm
     template_name = 'tasks/create_task.html'
-    success_url = reverse_lazy('tasks:list')
+    success_url = reverse_lazy('tasks:category')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -109,18 +115,17 @@ class CreateCategoryView(LoginRequiredMixin, CreateView):
 
 class DeleteCategoryView(LoginRequiredMixin, DeleteView):
     model = Category
-    success_url = reverse_lazy('tasks:delete_category')
+    success_url = reverse_lazy('tasks:category')
 
-    def get_object(self, queryset = None):
+    def get_object(self, queryset=None):
         return Category.objects.get(pk=self.kwargs['pk'], user=self.request.user)
-
 
 
 class UpdateCategoryView(LoginRequiredMixin, UpdateView):
     model = Category
     form_class = CategoryForm
-    success_url = reverse_lazy('tasks:list')
+    success_url = reverse_lazy('tasks:category')
     template_name = 'tasks/create_task.html'
 
-    def get_object(self, queryset = None):
+    def get_object(self, queryset=None):
         return Category.objects.get(pk=self.kwargs['pk'], user=self.request.user)

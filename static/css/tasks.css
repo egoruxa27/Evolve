@@ -64,6 +64,154 @@
     font-weight: 700;
 }
 
+.category-page {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.category-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.category-page-header h1 {
+    margin: 0;
+    color: rgb(35, 33, 48);
+}
+
+.category-create-button,
+.category-action-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid rgb(225, 223, 233);
+    background-color: rgb(255, 255, 255);
+    color: rgb(124, 92, 255);
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.category-create-button:hover,
+.category-action-link:hover {
+    background-color: rgb(124, 92, 255);
+    border-color: rgb(124, 92, 255);
+    color: rgb(255, 255, 255);
+}
+
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.category-panel {
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(225, 223, 233);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.category-panel summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    list-style: none;
+    cursor: pointer;
+    padding: 18px 20px;
+    background-color: rgb(248, 247, 251);
+    font-weight: 700;
+    color: rgb(35, 33, 48);
+}
+
+.category-panel summary::-webkit-details-marker {
+    display: none;
+}
+
+.category-name {
+    color: rgb(35, 33, 48);
+}
+
+.category-task-count {
+    color: rgb(103, 75, 210);
+    font-size: 13px;
+}
+
+.category-panel-body {
+    padding: 18px 20px 20px;
+}
+
+.category-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.category-delete-form {
+    margin: 0;
+}
+
+.category-delete-link {
+    background-color: rgba(181, 76, 60, 0.08);
+    border-color: rgba(181, 76, 60, 0.2);
+    color: rgb(160, 63, 50);
+}
+
+.category-delete-link:hover {
+    background-color: rgb(181, 76, 60);
+    border-color: rgb(181, 76, 60);
+    color: rgb(255, 255, 255);
+}
+
+.category-tasks h2 {
+    margin: 0 0 12px;
+    font-size: 18px;
+    color: rgb(35, 33, 48);
+}
+
+.category-tasks ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.category-tasks li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    background-color: rgb(248, 247, 251);
+    border: 1px solid rgb(225, 223, 233);
+    border-radius: 10px;
+}
+
+.category-tasks li a {
+    color: rgb(103, 75, 210);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.category-empty {
+    padding: 28px 20px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(225, 223, 233);
+    border-radius: 14px;
+    text-align: center;
+    color: rgb(85, 82, 100);
+}
+
 .task-card {
     max-width: 800px;
     width: 100%;

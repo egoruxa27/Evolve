@@ -36,6 +36,6 @@ class CategoryForm(forms.ModelForm):
             self.user
             and Category.objects.filter(user=self.user).count() >= MAX_CATEGORIES
         ):
-            raise forms.ValidationError('нельзя создать больше 20 категорий')
+            raise forms.ValidationError(f'нельзя создать больше {MAX_CATEGORIES} категорий')
         
         return cleaned_data
