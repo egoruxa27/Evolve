@@ -3,7 +3,7 @@ from django import forms
 from .models import Task, Category
 
 
-MAX_CATEGORIES = 20
+MAX_CATEGORIES = 10
 
 class CreateTaskForm(forms.ModelForm):
     xp_reward = forms.IntegerField(

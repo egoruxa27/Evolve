@@ -94,7 +94,12 @@ class CategoryListView(LoginRequiredMixin, ListView):
     context_object_name = 'category_list'
 
     def get_queryset(self):
-        return Category.objects.filter(user=self.request.user).order_by('name')
+        return (
+            Category.objects
+            .filter(user=self.request.user)
+            .order_by('name')
+            .prefetch_related('tasks')
+        )
 
 
 class CreateCategoryView(LoginRequiredMixin, CreateView):
