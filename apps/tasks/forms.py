@@ -3,6 +3,8 @@ from django import forms
 from .models import Task, Category
 
 
+MAX_CATEGORIES = 20
+
 class CreateTaskForm(forms.ModelForm):
     xp_reward = forms.IntegerField(
         label='Количество опыта за выполнения задачи',
@@ -22,3 +24,18 @@ class CreateCategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ('name',)
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if (
+            self.user
+            and Category.objects.filter(user=self.user).count() >= MAX_CATEGORIES
+        ):
+            raise forms.ValidationError('нельзя создать больше 20 категорий')
+        
+        return cleaned_data

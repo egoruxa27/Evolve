@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView, DeleteView, UpdateView
 from django.views import View
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -88,7 +88,15 @@ class CreateTaskView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class CreateCategoryView(CreateView):
+class CategoryListView(LoginRequiredMixin, ListView):
+    model = Category
+    template_name = 'categorys/category_list.html'
+
+    def get_queryset(self):
+        return (Category.objects.filter(user=self.request.user))
+
+
+class CreateCategoryView(LoginRequiredMixin, CreateView):
     model = Category
     form_class = CreateCategoryForm
     template_name = 'tasks/create_task.html'
@@ -97,3 +105,22 @@ class CreateCategoryView(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+
+class DeleteCategoryView(LoginRequiredMixin, DeleteView):
+    model = Category
+    success_url = reverse_lazy('tasks:list')
+
+    def get_object(self, queryset = None):
+        return Category.objects.get(pk=self.kwargs['pk'], user=self.request.user)
+
+
+
+class UpdateCategoryView(LoginRequiredMixin, UpdateView):
+    model = Category
+    form_class = CreateCategoryForm
+    success_url = reverse_lazy('tasks:list')
+    template_name = 'tasks/create_task.html'
+
+    def get_object(self, queryset = None):
+        return Category.objects.get(pk=self.kwargs['pk'], user=self.request.user)

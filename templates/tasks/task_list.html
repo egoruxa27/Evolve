@@ -11,16 +11,6 @@
 
 <div class="task-list-layout">
     <div class="task-list-controls">
-        <div class="task-list-actions">
-            <a href="{% url 'tasks:create_category' %}" class="task-create-category">Создать категорию</a>
-            {% if current_category %}
-                {% if is_history %}
-                    <a href="{% url 'tasks:history' %}" class="task-reset-filter">Сбросить фильтр</a>
-                {% else %}
-                    <a href="{% url 'tasks:list' %}" class="task-reset-filter">Сбросить фильтр</a>
-                {% endif %}
-            {% endif %}
-        </div>
 
         {% if categories %}
             <div class="task-category-filter">

@@ -1,0 +1,20 @@
+{% extends 'base.html'%}
+
+{% load static %}
+
+{% block content %}
+
+<h1>Все ваши категории</h1>
+{% for category in category_list %}
+    {{ category.name }}
+    {% for task in category.get_active_tasks %}
+        {{ task.title }},
+    {% empty %}
+        <p>В этой категории нет активных задач.</p>
+    {% endfor %}
+{% endfor %}
+<p>
+<a href="{% url 'tasks:create_category' %}">Создать категорию</a>
+</p>
+
+{% endblock content %}

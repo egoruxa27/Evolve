@@ -8,6 +8,9 @@
                 Выйти из аккаунта
             </button>
         </form>
+        <a href="{% url 'tasks:category' %}" class="categories-link">
+            Категории
+        </a>
         <a href="{% url 'users:profile' %}" class="profile-link">
             <span class="header-avatar" aria-hidden="true">
                 {% if request.user.avatar %}

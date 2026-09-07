@@ -25,6 +25,11 @@ class Category(models.Model):
             )
         ]
 
+    def get_active_tasks(self):
+        return self.tasks.filter(
+            status=Task.Status.NOT_STARTED
+        )
+
     def __str__(self):
         return self.name
 
