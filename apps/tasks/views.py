@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 
 from .models import Task, Category
-from .forms import CreateTaskForm, CreateCategoryForm
+from .forms import CreateTaskForm, CategoryForm
 from .services import complete_task
 
 
@@ -98,7 +98,7 @@ class CategoryListView(LoginRequiredMixin, ListView):
 
 class CreateCategoryView(LoginRequiredMixin, CreateView):
     model = Category
-    form_class = CreateCategoryForm
+    form_class = CategoryForm
     template_name = 'tasks/create_task.html'
     success_url = reverse_lazy('tasks:list')
 
@@ -109,7 +109,7 @@ class CreateCategoryView(LoginRequiredMixin, CreateView):
 
 class DeleteCategoryView(LoginRequiredMixin, DeleteView):
     model = Category
-    success_url = reverse_lazy('tasks:list')
+    success_url = reverse_lazy('tasks:delete_category')
 
     def get_object(self, queryset = None):
         return Category.objects.get(pk=self.kwargs['pk'], user=self.request.user)
@@ -118,7 +118,7 @@ class DeleteCategoryView(LoginRequiredMixin, DeleteView):
 
 class UpdateCategoryView(LoginRequiredMixin, UpdateView):
     model = Category
-    form_class = CreateCategoryForm
+    form_class = CategoryForm
     success_url = reverse_lazy('tasks:list')
     template_name = 'tasks/create_task.html'
 

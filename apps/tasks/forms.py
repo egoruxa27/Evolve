@@ -20,7 +20,7 @@ class CreateTaskForm(forms.ModelForm):
         fields = ('title', 'description', 'deadline', 'xp_reward', 'category')
 
 
-class CreateCategoryForm(forms.ModelForm):
+class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ('name',)

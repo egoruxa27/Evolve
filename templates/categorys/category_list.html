@@ -12,6 +12,13 @@
     {% empty %}
         <p>В этой категории нет активных задач.</p>
     {% endfor %}
+    <form method='POST' action="{% url 'tasks:delete_category' category.id %}" novalidate>
+        {% csrf_token %}
+        <button type=submit>Удалить эту категорию</button>
+    </form>
+    <a href="{% url 'tasks:update_category' category.id %}">
+        Изменить эту категорию
+    </a>
 {% endfor %}
 <p>
 <a href="{% url 'tasks:create_category' %}">Создать категорию</a>
