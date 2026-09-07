@@ -32,8 +32,17 @@
     text-transform: uppercase;
 }
 
-.task-detail-status {
+.task-detail-meta-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 16px;
     text-align: right;
+}
+
+.task-detail-status,
+.task-detail-category {
+    min-width: 140px;
 }
 
 .task-detail-heading h1 {

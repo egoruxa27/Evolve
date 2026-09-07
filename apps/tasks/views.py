@@ -5,41 +5,55 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 
-from .models import Task
-from .forms import CreateTaskForm
+from .models import Task, Category
+from .forms import CreateTaskForm, CreateCategoryForm
 from .services import complete_task
 
 
-class TaskListView(LoginRequiredMixin, ListView):
+class BaseTaskListView(LoginRequiredMixin, ListView):
     model = Task
     template_name = 'tasks/task_list.html'
     paginate_by = 5
 
+    status_filter = []
+
     def get_queryset(self):
-        return (
-            Task.objects
-            .filter(user=self.request.user, status__in=['not_started', 'in_progress'])
-            .order_by('-created_at')
-        )
+        queryset = Task.objects.filter(user=self.request.user, status__in=self.status_filter).order_by('-created_at')
+
+        category_id = self.request.GET.get('category')
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_history'] = False
+        context['is_history'] = self.status_filter in (['completed', 'failed'],)
+        context['categories'] = Category.objects.filter(
+            user=self.request.user
+        ).order_by('name')
+
+        category_id = self.request.GET.get('category')
+        if category_id:
+            context['current_category'] = Category.objects.filter(
+                user=self.request.user,
+                pk=category_id
+            ).first()
+        else:
+            context['current_category'] = None
+
         return context
 
 
-class TaskHistoryView(TaskListView):
-    def get_queryset(self):
-        return (
-            Task.objects
-            .filter(user=self.request.user, status__in=['completed', 'failed'])
-            .order_by('-completed_at')
-        )
+class TaskListView(BaseTaskListView):
+    status_filter = ['not_started', 'in_progress']
 
+class TaskHistoryView(BaseTaskListView):
+    status_filter = ['completed', 'failed']
     def get_context_data(self, **kwargs):
-            context = super().get_context_data(**kwargs)
-            context['is_history'] = True
-            return context
+        context = super().get_context_data(**kwargs)
+        context['is_history'] = True
+        return context
 
 
 class TaskDetailView(LoginRequiredMixin, DetailView):
@@ -66,6 +80,17 @@ class UpdateTaskStatusView(LoginRequiredMixin, View):
 class CreateTaskView(LoginRequiredMixin, CreateView):
     model = Task
     form_class = CreateTaskForm
+    template_name = 'tasks/create_task.html'
+    success_url = reverse_lazy('tasks:list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class CreateCategoryView(CreateView):
+    model = Category
+    form_class = CreateCategoryForm
     template_name = 'tasks/create_task.html'
     success_url = reverse_lazy('tasks:list')
 

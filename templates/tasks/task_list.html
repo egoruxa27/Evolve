@@ -9,19 +9,66 @@
 
 {% block content %}
 
-<div class='task-card'>
+<div class="task-list-layout">
+    <div class="task-list-controls">
+        <div class="task-list-actions">
+            <a href="{% url 'tasks:create_category' %}" class="task-create-category">Создать категорию</a>
+            {% if current_category %}
+                {% if is_history %}
+                    <a href="{% url 'tasks:history' %}" class="task-reset-filter">Сбросить фильтр</a>
+                {% else %}
+                    <a href="{% url 'tasks:list' %}" class="task-reset-filter">Сбросить фильтр</a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        {% if categories %}
+            <div class="task-category-filter">
+                <span class="task-category-filter-title">Фильтр по категориям</span>
+
+                {% if is_history %}
+                    <a href="{% url 'tasks:history' %}" class="task-filter-item {% if not current_category %}task-filter-item-active{% endif %}">
+                        Все задачи
+                    </a>
+                {% else %}
+                    <a href="{% url 'tasks:list' %}" class="task-filter-item {% if not current_category %}task-filter-item-active{% endif %}">
+                        Все задачи
+                    </a>
+                {% endif %}
+
+                {% for category in categories %}
+                    {% if is_history %}
+                        <a href="?category={{ category.id }}" class="task-filter-item {% if current_category and current_category.id == category.id %}task-filter-item-active{% endif %}">
+                            {{ category.name }}
+                        </a>
+                    {% else %}
+                        <a href="?category={{ category.id }}" class="task-filter-item {% if current_category and current_category.id == category.id %}task-filter-item-active{% endif %}">
+                            {{ category.name }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class='task-card'>
     {% if is_history %}
-    <h2>История выполненых задач</h2>
+        <h2>История выполненых задач {% if current_category %}в категории "{{ current_category.name}}"{% endif %}</h2>
     {% else %}
-    <h2>Список задач</h2>
+        <h2>Список задач {% if current_category %}в категории "{{ current_category.name}}"{% endif %}</h2>
     {% endif %}
 
     <ul class="task-list">
         {% for task in task_list %}
             <li class="task-item">
-                <a href="{% url 'tasks:detail' task.pk %}">
-                    <h3>{{ task.title }}</h3>
-                </a>
+                <div class="task-item-header">
+                    <a href="{% url 'tasks:detail' task.pk %}">
+                        <h3>{{ task.title }}</h3>
+                    </a>
+                    {% if task.category %}
+                        <a href='?category={{ task.category.id }}' class="task-category">{{ task.category.name }}</a>
+                    {% endif %}
+                </div>
                 <span class="task-status task-status-{{ task.status }}">
                     {{ task.get_status_display }}
                 </span>
@@ -62,8 +109,9 @@
     <a href="{% url 'tasks:create' %}" class='task-create'>Создать задачу</a>
     <a href="{% url 'tasks:history' %}" class='task-description'>История выполненых задач</a>
     {% endif %}
-</div>
+    </div>
 
+</div>
 
 <div class="task-pagination">
 

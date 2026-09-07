@@ -7,6 +7,28 @@ from .validators import validate_deadline
 
 User = get_user_model()
 
+
+class Category(models.Model):
+    user = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.CASCADE,
+        related_name='categories'
+    )
+    name = models.CharField('Название категории', max_length=30)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'name'],
+                name='unique_category_per_user'
+            )
+        ]
+
+    def __str__(self):
+        return self.name
+
+
 class Task(models.Model):
     class Status(models.TextChoices):
         NOT_STARTED = 'not_started', 'Не начата'
@@ -42,7 +64,7 @@ class Task(models.Model):
         ]
     )
     category = models.ForeignKey(
-        'Category',
+        Category,
         verbose_name='Категория проекта',
         blank=True,
         null=True,
@@ -55,6 +77,3 @@ class Task(models.Model):
         verbose_name_plural = 'Задачи'
 
 
-class Category(models.Model):
-    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
-    category = models.CharField('Категория')

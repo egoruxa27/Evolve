@@ -15,9 +15,17 @@
             <h1>{{ task.title }}</h1>
         </div>
 
-        <div class="task-detail-status">
-            <span class="task-detail-label">Статус</span>
-            <h1>{{ task.get_status_display }}</h1>
+        <div class="task-detail-meta-group">
+            <div class="task-detail-status">
+                <span class="task-detail-label">Статус</span>
+                <h1>{{ task.get_status_display }}</h1>
+            </div>
+            {% if task.category %}
+            <div class="task-detail-category">
+                <span class="task-detail-label">Категория</span>
+                <h1>{{ task.category.name }}</h1>
+            </div>
+            {% endif %}
         </div>
     </div>
 

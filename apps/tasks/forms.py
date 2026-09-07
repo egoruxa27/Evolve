@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Task
+from .models import Task, Category
 
 
 class CreateTaskForm(forms.ModelForm):
@@ -15,4 +15,10 @@ class CreateTaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        fields = ('title', 'description', 'deadline', 'xp_reward')
+        fields = ('title', 'description', 'deadline', 'xp_reward', 'category')
+
+
+class CreateCategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ('name',)
