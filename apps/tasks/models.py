@@ -18,6 +18,8 @@ class Category(models.Model):
     name = models.CharField('Название категории', max_length=30)
 
     class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Квтегории'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'name'],
@@ -80,5 +82,9 @@ class Task(models.Model):
     class Meta:
         verbose_name = 'Задача'
         verbose_name_plural = 'Задачи'
+
+
+    def __str__(self):
+        return self.title
 
 
