@@ -3,7 +3,6 @@ from django.views import View
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import get_user_model
 
 from .models import Task, Category
 from .forms import CreateTaskForm, CategoryForm
@@ -18,7 +17,10 @@ class BaseTaskListView(LoginRequiredMixin, ListView):
     status_filter = []
 
     def get_queryset(self):
-        queryset = Task.objects.filter(user=self.request.user, status__in=self.status_filter).order_by('-created_at')
+        queryset = Task.objects.filter(
+            user=self.request.user,
+            status__in=self.status_filter
+        ).order_by('-created_at')
 
         category_id = self.request.GET.get('category')
         if category_id:
@@ -28,7 +30,6 @@ class BaseTaskListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_history'] = self.status_filter in (['completed', 'failed'],)
         context['categories'] = Category.objects.filter(
             user=self.request.user
         ).order_by('name')
@@ -48,8 +49,14 @@ class BaseTaskListView(LoginRequiredMixin, ListView):
 class TaskListView(BaseTaskListView):
     status_filter = ['not_started', 'in_progress']
 
+    def get_context_data(self, **kwargs):
+            context = super().get_context_data(**kwargs)
+            context['is_history'] = False
+            return context
+
 class TaskHistoryView(BaseTaskListView):
     status_filter = ['completed', 'failed']
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['is_history'] = True
