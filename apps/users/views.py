@@ -12,6 +12,7 @@ class CustomLoginView(LoginView):
     template_name = 'users/login.html'
     authentication_form = LoginForm
     next_page = reverse_lazy('tasks:list')
+    redirect_authenticated_user = True
 
 
 class CustomLogoutView(LogoutView):

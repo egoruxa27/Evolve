@@ -3,7 +3,7 @@ services:
     image: postgres:16
     container_name: evolve_db
     env_file:
-      - .env
+      - ../.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -16,21 +16,6 @@ services:
     image: redis:8
     container_name: evolve_redis
 
-  web:
-    build: .
-    container_name: evolve_web
-    env_file:
-      - .env
-    ports:
-      - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    volumes:
-      - media_data:/app/media
 
 volumes:
   postgres_data:
-  media_data:

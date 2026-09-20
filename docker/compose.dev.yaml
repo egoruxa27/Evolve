@@ -1,0 +1,23 @@
+services:
+
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: evolve_dev_web
+    env_file:
+      - ../.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - media_data:/app/media
+      - ..:/app
+  
+
+volumes:
+  media_data:
