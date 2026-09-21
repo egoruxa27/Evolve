@@ -17,8 +17,18 @@ class CustomLoginView(LoginView):
     next_page = reverse_lazy('tasks:list')
     redirect_authenticated_user = True
 
-    @method_decorator(ratelimit(key='ip', rate='5/m', method='POST', block=True))
-    @method_decorator(ratelimit(key='username', rate='5/m', method='POST', block=True))
+    @method_decorator(ratelimit(
+            key='ip',
+            rate='5/m',
+            method='POST',
+            block=True
+        ))
+    @method_decorator(ratelimit(
+        key='post:username',
+        rate='5/m',
+        method='POST',
+        block=True
+    ))
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
@@ -39,12 +49,17 @@ class RegisterCreateView(CreateView):
 
         return super().dispatch(request, *args, **kwargs)
 
-    @method_decorator(ratelimit(key='ip', rate='5/d', method='POST', block=True))
-    def post(request, *args, **kwargs):
+    @method_decorator(ratelimit(
+            key='ip',
+            rate='5/d',
+            method='POST', 
+            block=True
+        ))
+    def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
 
-class PrifileView(LoginRequiredMixin, DetailView):
+class ProfileUserView(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'users/profile.html'
 
@@ -52,14 +67,23 @@ class PrifileView(LoginRequiredMixin, DetailView):
         return self.request.user
 
 
-class ProfileUserView(LoginRequiredMixin, DetailView):
-    model = User
-    template_name = 'users/profile.html'
+# class ProfileView(LoginRequiredMixin, DetailView):
+#     model = User
+#     template_name = 'users/profile.html'
 
 
 class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
     template_name = 'users/change_password.html'
     success_url = reverse_lazy('users:profile')
+
+    @method_decorator(ratelimit(
+                key='user',
+                rate='5/d',
+                method='POST', 
+                block=True
+            ))
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
     
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
     model = User
@@ -68,4 +92,4 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('users:profile')
 
     def get_object(self, queryset = None):
-        return User.objects.get(pk=self.request.user.pk)
+        return self.request.user

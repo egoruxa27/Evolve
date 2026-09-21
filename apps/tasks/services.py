@@ -1,6 +1,6 @@
 from django.utils import timezone
 
-
+# check for race conditions problem
 def complete_task(task, user):
     if task.status in (
         task.Status.COMPLETED,
@@ -24,3 +24,4 @@ def complete_task(task, user):
     
     task.save()
     user.save()
+

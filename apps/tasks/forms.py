@@ -15,6 +15,12 @@ class CreateTaskForm(forms.ModelForm):
         widget=forms.DateTimeInput(attrs={'type': 'datetime-local'})
     )
 
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+        if user:
+            self.fields['category'].queryset = Category.objects.filter(user=user)
+
     class Meta:
         model = Task
         fields = ('title', 'description', 'deadline', 'xp_reward', 'category')
@@ -25,7 +31,7 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields = ('name',)
 
-    def __init__(self, *args, user=None, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = user
 
@@ -34,8 +40,11 @@ class CategoryForm(forms.ModelForm):
 
         if (
             self.user
+            and self.instance._state.adding
             and Category.objects.filter(user=self.user).count() >= MAX_CATEGORIES
         ):
-            raise forms.ValidationError(f'нельзя создать больше {MAX_CATEGORIES} категорий')
-        
+            raise forms.ValidationError(
+                f'Нельзя создать больше {MAX_CATEGORIES} категорий'
+            )
+
         return cleaned_data

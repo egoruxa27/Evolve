@@ -2,11 +2,20 @@ from django.views.generic import ListView, CreateView, DetailView, DeleteView, U
 from django.views import View
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Task, Category
 from .forms import CreateTaskForm, CategoryForm
 from .services import complete_task
+
+
+class UserFormKwargsMixin:
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
 
 class BaseTaskListView(LoginRequiredMixin, ListView):
@@ -54,6 +63,7 @@ class TaskListView(BaseTaskListView):
             context['is_history'] = False
             return context
 
+
 class TaskHistoryView(BaseTaskListView):
     status_filter = ['completed', 'failed']
 
@@ -84,11 +94,20 @@ class UpdateTaskStatusView(LoginRequiredMixin, View):
         return redirect('tasks:list')
 
 
-class CreateTaskView(LoginRequiredMixin, CreateView):
+class CreateTaskView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):
     model = Task
     form_class = CreateTaskForm
     template_name = 'tasks/create_task.html'
     success_url = reverse_lazy('tasks:list')
+
+    @method_decorator(ratelimit(
+        key='post:username',
+        rate='30/m',
+        method='POST',
+        block=True
+    ))
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -109,16 +128,20 @@ class CategoryListView(LoginRequiredMixin, ListView):
         )
 
 
-class CreateCategoryView(LoginRequiredMixin, CreateView):
+class CreateCategoryView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):
     model = Category
     form_class = CategoryForm
     template_name = 'tasks/create_task.html'
     success_url = reverse_lazy('tasks:category')
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
+    @method_decorator(ratelimit(
+        key='user',
+        rate='10/m',
+        method='POST',
+        block=True,
+    ))
+    def post(request, self, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -129,11 +152,11 @@ class DeleteCategoryView(LoginRequiredMixin, DeleteView):
     model = Category
     success_url = reverse_lazy('tasks:category')
 
-    def get_object(self, queryset=None):
-        return Category.objects.get(pk=self.kwargs['pk'], user=self.request.user)
+    def get_queryset(self):
+        return Category.objects.filter(user=self.request.user)
 
 
-class UpdateCategoryView(LoginRequiredMixin, UpdateView):
+class UpdateCategoryView(LoginRequiredMixin, UserFormKwargsMixin, UpdateView):
     model = Category
     form_class = CategoryForm
     success_url = reverse_lazy('tasks:category')
