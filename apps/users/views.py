@@ -1,10 +1,13 @@
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.views.generic import CreateView, UpdateView, DetailView
+from django.shortcuts import redirect
+from django.urls.base import reverse_lazy
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 
 from .forms import RegisterForm, LoginForm, UpdateProfileForm
-from django.urls import reverse_lazy
 
 User = get_user_model()
 
@@ -13,6 +16,11 @@ class CustomLoginView(LoginView):
     authentication_form = LoginForm
     next_page = reverse_lazy('tasks:list')
     redirect_authenticated_user = True
+
+    @method_decorator(ratelimit(key='ip', rate='5/m', method='POST', block=True))
+    @method_decorator(ratelimit(key='username', rate='5/m', method='POST', block=True))
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 
 class CustomLogoutView(LogoutView):
@@ -25,8 +33,18 @@ class RegisterCreateView(CreateView):
     template_name = 'users/register.html'
     success_url = reverse_lazy('users:login')
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('tasks:list')
 
-class PrifileView(DetailView):
+        return super().dispatch(request, *args, **kwargs)
+
+    @method_decorator(ratelimit(key='ip', rate='5/d', method='POST', block=True))
+    def post(request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class PrifileView(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'users/profile.html'
 

@@ -1,6 +1,7 @@
 asgiref==3.12.1
 Django==6.1
 django-debug-toolbar==7.1.1
+django-ratelimit==4.1.0
 dotenv==0.9.9
 pillow==12.3.0
 psycopg==3.3.5
