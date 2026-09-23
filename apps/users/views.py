@@ -5,9 +5,7 @@ from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView
 from django.shortcuts import redirect
 from django.urls.base import reverse_lazy
-from django.utils.decorators import method_decorator
 from django_ratelimit.core import is_ratelimited
-from django_ratelimit.decorators import ratelimit
 
 from .forms import RegisterForm, LoginForm, UpdateProfileForm
 
@@ -33,6 +31,7 @@ class CustomLoginView(LoginView):
             group='login_ip',
             key='post:username',
             rate='5/m',
+            method='POST', 
             increment=True
         )
 
@@ -61,13 +60,22 @@ class RegisterCreateView(CreateView):
 
         return super().dispatch(request, *args, **kwargs)
 
-    @method_decorator(ratelimit(
-            key='ip',
-            rate='5/d',
-            method='POST', 
-            block=True
-        ))#change for is_ratelimited
     def post(self, request, *args, **kwargs):
+        limited = is_ratelimited(
+            request,
+            key='ip',
+            rate='5/h',
+            method='POST',
+            increment='True'
+        )
+
+        if limited:
+            messages.error(
+                request,
+                'Слишком много попыток регистрации'
+            )
+            return redirect('users:register')
+
         return super().post(request, *args, **kwargs)
 
 
@@ -88,13 +96,22 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
     template_name = 'users/change_password.html'
     success_url = reverse_lazy('users:profile')
 
-    @method_decorator(ratelimit(
-                key='user',
-                rate='5/d',
-                method='POST', 
-                block=True
-            ))#change for is_ratelimited
     def post(self, request, *args, **kwargs):
+        limited = is_ratelimited(
+            request,
+            key='user',
+            rate='5/d',
+            method='POST',
+            increment='True'
+        )
+
+        if limited:
+            messages.error(
+                request,
+                'Слишком много попыток смены пароля'
+            )
+            return redirect('users:register')
+
         return super().post(request, *args, **kwargs)
     
 class UpdateProfileView(LoginRequiredMixin, UpdateView):

@@ -2,9 +2,9 @@ from django.views.generic import ListView, CreateView, DetailView, DeleteView, U
 from django.views import View
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
-from django_ratelimit.decorators import ratelimit 
+from django_ratelimit.core import is_ratelimited
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 from .models import Task, Category
 from .forms import CreateTaskForm, CategoryForm
@@ -100,13 +100,22 @@ class CreateTaskView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):
     template_name = 'tasks/create_task.html'
     success_url = reverse_lazy('tasks:list')
 
-    @method_decorator(ratelimit(
-        key='user',
-        rate='30/m',
-        method='POST',
-        block=True
-    ))
     def post(self, request, *args, **kwargs):
+        limited = is_ratelimited(
+            request,
+            key='user',
+            rate='30/m',
+            method='POST',
+            increment=True
+        )
+
+        if limited:
+            messages.error(
+                request,
+                'превышен лимит созданных задач'
+            )
+            return redirect('tasks:create')
+
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -134,13 +143,22 @@ class CreateCategoryView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):
     template_name = 'tasks/create_task.html'
     success_url = reverse_lazy('tasks:category')
 
-    @method_decorator(ratelimit(
-        key='user',
-        rate='10/m',
-        method='POST',
-        block=True,
-    ))
     def post(self, request, *args, **kwargs):
+        limited = is_ratelimited(
+                    request,
+                    key='user',
+                    rate='10/m',
+                    method='POST',
+                    increment=True
+                )
+        
+        if limited:
+            messages.error(
+                request,
+                'превышен лимит созданных категорий'
+            )
+            return redirect('tasks:create')
+
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
