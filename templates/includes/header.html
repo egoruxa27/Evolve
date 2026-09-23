@@ -1,6 +1,14 @@
 <div class="header">
     <a href="{% url 'tasks:list' %}" class='logo'>Evolve</a>
 
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}{% comment %} Create alert css class {% endcomment %}
+
     {% if request.user.is_authenticated %}
         <form method="POST" action="{% url 'users:logout' %}">
             {% csrf_token %}

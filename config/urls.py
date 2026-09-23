@@ -13,9 +13,8 @@ def root_redirect(request):
     return redirect('users:login')
 
 urlpatterns = [
-    path('__debug__/', include('debug_toolbar.urls')),
-    path('admin/', admin.site.urls),
     path('', root_redirect),
+    path('admin/', admin.site.urls),
     path('users/', include('apps.users.urls')),
     path('tasks/', include('apps.tasks.urls')),
 ]

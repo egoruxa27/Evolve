@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, DetailView
 from django.shortcuts import redirect
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
+from django_ratelimit.core import is_ratelimited
 from django_ratelimit.decorators import ratelimit
 
 from .forms import RegisterForm, LoginForm, UpdateProfileForm
@@ -17,19 +19,29 @@ class CustomLoginView(LoginView):
     next_page = reverse_lazy('tasks:list')
     redirect_authenticated_user = True
 
-    @method_decorator(ratelimit(
+    def post(self, request, *args, **kwargs):
+        ip_limited = is_ratelimited(
+            request,
+            group='login_ip',
             key='ip',
             rate='5/m',
             method='POST',
-            block=True
-        ))
-    @method_decorator(ratelimit(
-        key='post:username',
-        rate='5/m',
-        method='POST',
-        block=True
-    ))
-    def post(self, request, *args, **kwargs):
+            increment=True
+        )
+        user_limited = is_ratelimited(
+            request,
+            group='login_ip',
+            key='post:username',
+            rate='5/m',
+            increment=True
+        )
+
+        if ip_limited or user_limited:
+            messages.error(
+                request,
+                'Слишком много попыток входа. Попробуйте позже.',
+            )
+            return redirect('users:login')
         return super().post(request, *args, **kwargs)
 
 
@@ -54,7 +66,7 @@ class RegisterCreateView(CreateView):
             rate='5/d',
             method='POST', 
             block=True
-        ))
+        ))#change for is_ratelimited
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
@@ -81,7 +93,7 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
                 rate='5/d',
                 method='POST', 
                 block=True
-            ))
+            ))#change for is_ratelimited
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
     

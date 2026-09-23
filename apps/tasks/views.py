@@ -29,7 +29,7 @@ class BaseTaskListView(LoginRequiredMixin, ListView):
         queryset = Task.objects.filter(
             user=self.request.user,
             status__in=self.status_filter
-        ).order_by('-created_at')
+        ).select_related('category').order_by('-created_at')
 
         category_id = self.request.GET.get('category')
         if category_id:
@@ -101,7 +101,7 @@ class CreateTaskView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):
     success_url = reverse_lazy('tasks:list')
 
     @method_decorator(ratelimit(
-        key='post:username',
+        key='user',
         rate='30/m',
         method='POST',
         block=True
@@ -140,7 +140,7 @@ class CreateCategoryView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):
         method='POST',
         block=True,
     ))
-    def post(request, self, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -162,5 +162,5 @@ class UpdateCategoryView(LoginRequiredMixin, UserFormKwargsMixin, UpdateView):
     success_url = reverse_lazy('tasks:category')
     template_name = 'tasks/create_task.html'
 
-    def get_object(self, queryset=None):
-        return Category.objects.get(pk=self.kwargs['pk'], user=self.request.user)
+    def get_queryset(self):
+        return Category.objects.filter(user=self.request.user)
