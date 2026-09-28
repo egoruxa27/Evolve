@@ -9,6 +9,7 @@ from django.contrib import messages
 from .models import Task, Category
 from .forms import CreateTaskForm, CategoryForm
 from .services import complete_task
+from ..mixins import RateLimitPostMixin
 
 
 class UserFormKwargsMixin:
@@ -89,34 +90,25 @@ class UpdateTaskStatusView(LoginRequiredMixin, View):
             user=request.user
         )
 
+        #mb race condition, check and fix that
         complete_task(task, request.user)
 
         return redirect('tasks:list')
 
 
-class CreateTaskView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):
+class CreateTaskView(
+    LoginRequiredMixin,
+    RateLimitPostMixin,
+    UserFormKwargsMixin,
+    CreateView
+):
     model = Task
     form_class = CreateTaskForm
     template_name = 'tasks/create_task.html'
     success_url = reverse_lazy('tasks:list')
 
-    def post(self, request, *args, **kwargs):
-        limited = is_ratelimited(
-            request,
-            key='user',
-            rate='30/m',
-            method='POST',
-            increment=True
-        )
-
-        if limited:
-            messages.error(
-                request,
-                'превышен лимит созданных задач'
-            )
-            return redirect('tasks:create')
-
-        return super().post(request, *args, **kwargs)
+    ratelimit_rules = [('user', '30/m')]
+    ratelimit_message = 'Превышен лимит созданных задач'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -137,29 +129,19 @@ class CategoryListView(LoginRequiredMixin, ListView):
         )
 
 
-class CreateCategoryView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):
+class CreateCategoryView(
+    LoginRequiredMixin,
+    RateLimitPostMixin,
+    UserFormKwargsMixin,
+    CreateView
+):
     model = Category
     form_class = CategoryForm
     template_name = 'tasks/create_task.html'
     success_url = reverse_lazy('tasks:category')
 
-    def post(self, request, *args, **kwargs):
-        limited = is_ratelimited(
-                    request,
-                    key='user',
-                    rate='10/m',
-                    method='POST',
-                    increment=True
-                )
-        
-        if limited:
-            messages.error(
-                request,
-                'превышен лимит созданных категорий'
-            )
-            return redirect('tasks:create_category')
-
-        return super().post(request, *args, **kwargs)
+    ratelimit_rules = [('user', '30/m')]
+    ratelimit_message = 'Превышен лимит создания категорий'
 
     def form_valid(self, form):
         form.instance.user = self.request.user

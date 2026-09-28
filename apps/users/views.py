@@ -8,75 +8,38 @@ from django.urls.base import reverse_lazy
 from django_ratelimit.core import is_ratelimited
 
 from .forms import RegisterForm, LoginForm, UpdateProfileForm
+from ..mixins import RateLimitPostMixin
 
 User = get_user_model()
 
-class CustomLoginView(LoginView):
+class CustomLoginView(RateLimitPostMixin ,LoginView):
     template_name = 'users/login.html'
     authentication_form = LoginForm
     next_page = reverse_lazy('tasks:list')
     redirect_authenticated_user = True
 
-    def post(self, request, *args, **kwargs):
-        ip_limited = is_ratelimited(
-            request,
-            group='login_ip',
-            key='ip',
-            rate='5/m',
-            method='POST',
-            increment=True
-        )
-        user_limited = is_ratelimited(
-            request,
-            group='login_ip',
-            key='post:username',
-            rate='5/m',
-            method='POST', 
-            increment=True
-        )
-
-        if ip_limited or user_limited:
-            messages.error(
-                request,
-                'Слишком много попыток входа. Попробуйте позже.',
-            )
-            return redirect('users:login')
-        return super().post(request, *args, **kwargs)
+    ratelimit_rules = [('ip', '5/m'), ('post:username', '5/m')]
+    ratelimit_message = 'Слишком много попыток входа. Попробуйте позже'
 
 
 class CustomLogoutView(LogoutView):
     next_page = reverse_lazy('users:login')
 
 
-class RegisterCreateView(CreateView):
+class RegisterCreateView(RateLimitPostMixin ,CreateView):
     model = User
     form_class = RegisterForm
     template_name = 'users/register.html'
     success_url = reverse_lazy('users:login')
+
+    ratelimit_rules = [('ip', '5/h')]
+    ratelimit_message = 'Слишком много попыток регистрации'
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('tasks:list')
 
         return super().dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        limited = is_ratelimited(
-            request,
-            key='ip',
-            rate='5/h',
-            method='POST',
-            increment=True
-        )
-
-        if limited:
-            messages.error(
-                request,
-                'Слишком много попыток регистрации'
-            )
-            return redirect('users:register')
-
-        return super().post(request, *args, **kwargs)
 
 
 class ProfileUserView(LoginRequiredMixin, DetailView):
@@ -92,27 +55,13 @@ class ProfileUserView(LoginRequiredMixin, DetailView):
 #     template_name = 'users/profile.html'
 
 
-class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
+class ChangePasswordView(LoginRequiredMixin, RateLimitPostMixin ,PasswordChangeView):
     template_name = 'users/change_password.html'
     success_url = reverse_lazy('users:profile')
 
-    def post(self, request, *args, **kwargs):
-        limited = is_ratelimited(
-            request,
-            key='user',
-            rate='5/d',
-            method='POST',
-            increment=True
-        )
+    ratelimit_rules = [('user','5/d')]
+    ratelimit_message = 'Слишком много попыток смены пароля'
 
-        if limited:
-            messages.error(
-                request,
-                'Слишком много попыток смены пароля'
-            )
-            return redirect('users:change_password')
-
-        return super().post(request, *args, **kwargs)
     
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
     model = User
