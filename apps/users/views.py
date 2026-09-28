@@ -66,7 +66,7 @@ class RegisterCreateView(CreateView):
             key='ip',
             rate='5/h',
             method='POST',
-            increment='True'
+            increment=True
         )
 
         if limited:
@@ -102,7 +102,7 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
             key='user',
             rate='5/d',
             method='POST',
-            increment='True'
+            increment=True
         )
 
         if limited:
@@ -110,7 +110,7 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
                 request,
                 'Слишком много попыток смены пароля'
             )
-            return redirect('users:register')
+            return redirect('users:change_password')
 
         return super().post(request, *args, **kwargs)
     

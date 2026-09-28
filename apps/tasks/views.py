@@ -157,7 +157,7 @@ class CreateCategoryView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):
                 request,
                 'превышен лимит созданных категорий'
             )
-            return redirect('tasks:create')
+            return redirect('tasks:create_category')
 
         return super().post(request, *args, **kwargs)
 
