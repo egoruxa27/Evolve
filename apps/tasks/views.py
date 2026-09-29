@@ -2,9 +2,7 @@ from django.views.generic import ListView, CreateView, DetailView, DeleteView, U
 from django.views import View
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django_ratelimit.core import is_ratelimited
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
 
 from .models import Task, Category
 from .forms import CreateTaskForm, CategoryForm
@@ -107,7 +105,8 @@ class CreateTaskView(
     template_name = 'tasks/create_task.html'
     success_url = reverse_lazy('tasks:list')
 
-    ratelimit_rules = [('user', '30/m')]
+    ratelimit_group = 'tasks.create'
+    ratelimit_rules = (('user', '30/m'),)
     ratelimit_message = 'Превышен лимит созданных задач'
 
     def form_valid(self, form):
@@ -140,7 +139,8 @@ class CreateCategoryView(
     template_name = 'tasks/create_task.html'
     success_url = reverse_lazy('tasks:category')
 
-    ratelimit_rules = [('user', '30/m')]
+    ratelimit_group = 'tasks.category.create'
+    ratelimit_rules = (('user', '30/m'),)
     ratelimit_message = 'Превышен лимит создания категорий'
 
     def form_valid(self, form):

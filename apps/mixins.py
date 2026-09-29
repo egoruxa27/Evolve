@@ -1,11 +1,10 @@
-# core/mixins.py
 from django.contrib import messages
 from django.shortcuts import redirect
 from django_ratelimit.core import is_ratelimited
 
 
 class RateLimitPostMixin:
-    ratelimit_rules = []
+    ratelimit_rules = ()
     ratelimit_group = None
     ratelimit_message = 'Слишком много попыток. Попробуйте позже.'
     ratelimit_redirect_url = None
@@ -17,7 +16,7 @@ class RateLimitPostMixin:
         for key, rate in self.ratelimit_rules:
             if is_ratelimited(
                 request,
-                group=f'{group}:{key}',
+                group=group,
                 key=key,
                 rate=rate,
                 method='POST',
