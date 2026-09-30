@@ -1,6 +1,7 @@
 ﻿from django.contrib.auth import authenticate, get_user_model
 from django.db import IntegrityError
-from django.test import TestCase
+from django.test import TestCase, override_settings
+from django.urls import reverse
 
 from .forms import LoginForm, RegisterForm
 
@@ -204,3 +205,89 @@ class TestUserAuthentication(TestCase):
 
         self.assertIsNotNone(user)
 
+
+class TestUserRateLimit(TestCase):
+    @override_settings(RATELIMIT_ENABLE=True)
+    def test_register_rate_limit(self):
+        url = reverse('users:register')
+
+        for index in range(5):
+            data = {
+                'email': f'user{index}@test.com',
+                'nickname': f'user{index}',
+                'password1': PASSWORD,
+                'password2': PASSWORD,
+            }
+            response = self.client.post(url, data)
+            self.assertEqual(response.status_code, 302)
+
+        self.assertEqual(User.objects.count(), 5)
+
+        response = self.client.post(url, {
+            'email': 'user5@test.com',
+            'nickname': 'user5',
+            'password1': PASSWORD,
+            'password2': PASSWORD,
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, url)
+        self.assertEqual(User.objects.count(), 5)
+
+    @override_settings(RATELIMIT_ENABLE=True)
+    def test_login_rate_limit(self):
+        User.objects.create_user(
+            email=NORMALIZED_EMAIL,
+            nickname=NICKNAME,
+            password=PASSWORD,
+        )
+        url = reverse('users:login')
+        data = {
+            'username': NORMALIZED_EMAIL,
+            'password': DIFFERENT_PASSWORD,
+        }
+
+        for _ in range(5):
+            response = self.client.post(url, data)
+            self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, url)
+        self.assertEqual(User.objects.count(), 1)
+
+    @override_settings(RATELIMIT_ENABLE=True)
+    def test_change_password_rate_limit(self):
+        user = User.objects.create_user(
+            email=NORMALIZED_EMAIL,
+            nickname=NICKNAME,
+            password=PASSWORD,
+        )
+        self.client.force_login(user)
+        url = reverse('users:change_password')
+        data = {
+            'old_password': PASSWORD,
+            'new_password1': DIFFERENT_PASSWORD,
+            'new_password2': DIFFERENT_PASSWORD,
+        }
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('users:profile'))
+
+        for _ in range(4):
+            response = self.client.post(url, data)
+            self.assertEqual(response.status_code, 200)
+
+        user.refresh_from_db()
+        password_hash = user.password
+        self.assertTrue(user.check_password(DIFFERENT_PASSWORD))
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, url)
+        self.assertEqual(User.objects.count(), 1)
+        user.refresh_from_db()
+        self.assertEqual(user.password, password_hash)

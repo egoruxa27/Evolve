@@ -3,15 +3,16 @@ from datetime import timedelta
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.urls import reverse
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
-from .models import Task
+from .models import Category, Task
 from .services import complete_task
 
 
 User = get_user_model()
 
 class TestServices(TestCase):
+
     def setUp(self):
         self.user = User.objects.create_user(
             email='test@test.com',
@@ -127,4 +128,60 @@ class TestTaskAccess(TestCase):
             response,
             f"{reverse('users:login')}?next={reverse('tasks:list')}",
         )
+
+
+class TestTaskRateLimit(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+                    email='user@test.com',
+                    nickname='user',
+                )
+        self.client.force_login(self.user)
+
+    @override_settings(RATELIMIT_ENABLE=True)
+    def test_create_task_status_ratelimit(self):
+        url = reverse('tasks:create')
+        category = Category.objects.create(user=self.user, name='Test category')
+        data = {
+            'title': 'Test task',
+            'description': 'Test description',
+            'deadline': (
+                timezone.localtime(timezone.now() + timedelta(days=1))
+                .strftime('%Y-%m-%dT%H:%M')
+            ),
+            'xp_reward': 10,
+            'category': category.pk,
+        }
+
+        for _ in range(30):
+            self.client.post(url, data)
+
+        self.assertEqual(Task.objects.filter(user=self.user).count(), 30)
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, url)
+        self.assertEqual(Task.objects.filter(user=self.user).count(), 30)
+
+    @override_settings(RATELIMIT_ENABLE=True)
+    def test_create_category_ratelimit(self):
+        url = reverse('tasks:create_category')
+
+        for index in range(25):
+            data = {'name': f'Test category {index}'}
+            self.client.post(url, data)
+
+        self.assertEqual(Category.objects.filter(user=self.user).count(), 25)
+
+        response = self.client.post(
+            url,
+            {'name': 'Test category 30'},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, url)        
+        self.assertEqual(Category.objects.filter(user=self.user).count(), 25)
+
+
+
 #TODO: add tests for forms
+#      add test for max categories
