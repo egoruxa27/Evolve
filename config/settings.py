@@ -150,6 +150,10 @@ LOGIN_URL = '/users/login/'
 
 AUTH_USER_MODEL= 'users.User'
 
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
 if DEBUG:
     import socket
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
