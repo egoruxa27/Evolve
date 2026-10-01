@@ -15,17 +15,12 @@ services:
   redis:
     image: redis:8
     container_name: evolve_redis
-
-  celery_worker:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    command: celery -A config worker -l INFO
-    depends_on:
-      - db
-      - redis
-    volumes:
-      - ..:/app
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
 
 volumes:

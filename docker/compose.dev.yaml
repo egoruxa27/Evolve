@@ -13,10 +13,26 @@ services:
       db:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - media_data:/app/media
       - ..:/app
+
+  celery_worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: celery -A config worker -l INFO
+    env_file:
+      - ../.env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ..:/app
+    restart: unless-stopped
   
 
 volumes:
