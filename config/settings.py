@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+from celery.schedules import schedule
 
 load_dotenv()
 
@@ -98,6 +99,13 @@ CACHES = {
     },
 }
 
+CELERY_BEAT_SCHEDULE = {
+    "check-task-deadlines-every-5-minutes": {
+        "task": "apps.tasks.celery_tasks.notify_upcoming_deadlines",
+        "schedule": 300.0,
+    },
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -153,6 +161,12 @@ AUTH_USER_MODEL= 'users.User'
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+CELERY_TIMEZONE = TIME_ZONE
+
+CELERY_ENABLE_UTC = True
+
+CELERY_TASK_TRACK_STARTED = True
 
 if DEBUG:
     import socket

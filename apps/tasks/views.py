@@ -156,7 +156,11 @@ class DeleteCategoryView(LoginRequiredMixin, DeleteView):
         return Category.objects.filter(user=self.request.user)
 
 
-class UpdateCategoryView(LoginRequiredMixin, UserFormKwargsMixin, UpdateView):
+class UpdateCategoryView(
+    LoginRequiredMixin,
+    UserFormKwargsMixin,
+    UpdateView
+):
     model = Category
     form_class = CategoryForm
     success_url = reverse_lazy('tasks:category')

@@ -20,7 +20,7 @@ Evolve — web-приложение для управления личными �
 - начисление опыта и уровни пользователя;
 - пагинация списка задач;
 - настройки для PostgreSQL, Redis и Celery worker;
-- Docker Compose-конфигурации для разработки и production.
+- Docker Compose-конфигурация для локальной разработки.
 
 ## В разработке
 
@@ -53,7 +53,9 @@ Evolve/
 │   ├── tasks/                # задачи, категории, формы и представления
 │   └── users/                # пользователи, авторизация и профили
 ├── config/                   # настройки Django и конфигурация Celery
-├── docker/                   # Docker Compose-конфигурации
+├── Dockerfile                # образ Django-приложения
+├── compose.yaml              # общая Docker Compose-конфигурация
+├── compose.override.yaml     # локальные настройки разработки
 ├── media/                    # загруженные пользовательские файлы
 ├── static/                   # статические файлы и CSS
 ├── templates/                # HTML-шаблоны
@@ -89,17 +91,26 @@ POSTGRES_PASSWORD=postgres
 Из корня проекта выполните:
 
 ```bash
-docker compose -f docker/compose.yaml -f docker/compose.dev.yaml up --build
+docker compose up --build
 ```
 
 Compose запустит PostgreSQL, Redis, Django-приложение и Celery worker.
+Файл `compose.override.yaml` подключится автоматически и включит bind mount
+исходников для перезапуска Django при изменении кода.
 Приложение будет доступно по адресу <http://127.0.0.1:8000/>.
 
 В отдельном терминале примените миграции и создайте администратора:
 
 ```bash
-docker compose -f docker/compose.yaml -f docker/compose.dev.yaml exec web python manage.py migrate
-docker compose -f docker/compose.yaml -f docker/compose.dev.yaml exec web python manage.py createsuperuser
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py createsuperuser
+```
+
+Чтобы запустить базовую конфигурацию без dev-bind-mount и автоматической
+перезагрузки при изменении файлов, укажите только основной файл:
+
+```bash
+docker compose -f compose.yaml up --build
 ```
 
 ## Локальный запуск без Docker

@@ -51,7 +51,11 @@ class ProfileUserView(LoginRequiredMixin, DetailView):
         return self.request.user
 
 
-class ChangePasswordView(LoginRequiredMixin, RateLimitPostMixin, PasswordChangeView):
+class ChangePasswordView(
+    LoginRequiredMixin,
+    RateLimitPostMixin, 
+    PasswordChangeView
+):
     template_name = 'users/change_password.html'
     success_url = reverse_lazy('users:profile')
 
