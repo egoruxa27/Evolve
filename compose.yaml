@@ -52,6 +52,20 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A config beat -l INFO
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
 volumes:
   media_data:
   postgres_data:

@@ -5,3 +5,7 @@ services:
   celery_worker:
     volumes:
       - .:/app
+
+  celery_beat:
+    volumes:
+      - .:/app

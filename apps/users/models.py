@@ -18,10 +18,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     level = models.PositiveSmallIntegerField(
         'Уровень пользователя',
         default=1
-        )
+    )
     xp_amount = models.PositiveIntegerField('Опыт пользователя', default=0)
 
     objects = UserManager()
+
+    telegram_chat_id = models.BigIntegerField(
+    null=True,
+    blank=True,
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['nickname']
