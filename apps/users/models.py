@@ -23,11 +23,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    telegram_chat_id = models.BigIntegerField(
-    null=True,
-    blank=True,
-    )
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['nickname']
 

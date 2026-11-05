@@ -19,7 +19,7 @@ class Category(models.Model):
 
     class Meta:
         verbose_name = 'Категория'
-        verbose_name_plural = 'Квтегории'
+        verbose_name_plural = 'Категории'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'name'],
@@ -29,7 +29,10 @@ class Category(models.Model):
 
     def get_active_tasks(self):
         return self.tasks.filter(
-            status=Task.Status.NOT_STARTED
+            status__in=[
+                Task.Status.NOT_STARTED,
+                Task.Status.IN_PROGRESS,
+            ]
         )
 
     def __str__(self):
@@ -86,5 +89,4 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
-
 
