@@ -131,6 +131,65 @@ class TestTaskAccess(TestCase):
         )
 
 
+class TestTaskCategoryFilter(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email='filter@test.com',
+            nickname='filter-user',
+        )
+        self.category = Category.objects.create(
+            user=self.user,
+            name='Work',
+        )
+        self.categorized_task = Task.objects.create(
+            user=self.user,
+            title='Write report',
+            deadline=timezone.now() + timedelta(hours=1),
+            xp_reward=10,
+            category=self.category,
+        )
+        self.recent_task = Task.objects.create(
+            user=self.user,
+            title='Plan week',
+            deadline=timezone.now() + timedelta(hours=2),
+            xp_reward=10,
+        )
+        Task.objects.filter(pk=self.recent_task.pk).update(
+            created_at=timezone.now() + timedelta(days=1),
+        )
+        self.client.force_login(self.user)
+
+    def test_filters_tasks_and_sets_current_category(self):
+        response = self.client.get(
+            reverse('tasks:list'),
+            {'category': self.category.pk, 'sort': 'title'},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            list(response.context['task_list']),
+            [self.categorized_task],
+        )
+        self.assertEqual(response.context['current_category'], self.category)
+        self.assertEqual(response.context['current_sort'], 'title')
+
+    def test_sort_options_and_default_order(self):
+        for sort, expected_first, expected_sort in (
+            ('title', self.recent_task, 'title'),
+            ('deadline', self.categorized_task, 'deadline'),
+            ('invalid', self.recent_task, 'created'),
+        ):
+            with self.subTest(sort=sort):
+                response = self.client.get(
+                    reverse('tasks:list'),
+                    {'sort': sort},
+                )
+
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.context['current_sort'], expected_sort)
+                self.assertEqual(response.context['task_list'][0], expected_first)
+
+
 class TestCategoryForm(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -209,7 +268,7 @@ class TestTaskRateLimit(TestCase):
             data = {'name': f'Test category {index}'}
             self.client.post(url, data)
 
-        self.assertEqual(Category.objects.filter(user=self.user).count(), 25)
+        self.assertEqual(Category.objects.filter(user=self.user).count(), 30)
 
         response = self.client.post(
             url,
@@ -217,9 +276,4 @@ class TestTaskRateLimit(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, url)        
-        self.assertEqual(Category.objects.filter(user=self.user).count(), 25)
-
-
-
-#TODO: add tests for forms
-#      add test for max categories
+        self.assertEqual(Category.objects.filter(user=self.user).count(), 30)

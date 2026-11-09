@@ -2,12 +2,14 @@
     <a href="{% url 'tasks:list' %}" class='logo'>Evolve</a>
 
     {% if messages %}
-    {% for message in messages %}
-        <div class="alert">
-            {{ message }}
+        <div class="message-notifications" aria-live="polite">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-    {% endif %}{% comment %} Create alert css class {% endcomment %}
+    {% endif %}
 
     {% if request.user.is_authenticated %}
         <form method="POST" action="{% url 'users:logout' %}">

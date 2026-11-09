@@ -11,7 +11,7 @@ from ..mixins import RateLimitPostMixin
 User = get_user_model()
 
 
-class CustomLoginView(RateLimitPostMixin ,LoginView):
+class CustomLoginView(RateLimitPostMixin, LoginView):
     template_name = 'users/login.html'
     authentication_form = LoginForm
     next_page = reverse_lazy('tasks:list')

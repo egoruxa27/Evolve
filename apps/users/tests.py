@@ -291,3 +291,6 @@ class TestUserRateLimit(TestCase):
         self.assertEqual(User.objects.count(), 1)
         user.refresh_from_db()
         self.assertEqual(user.password, password_hash)
+
+
+# TODO: Не отчищается кэш после тестов на ratelimit

@@ -10,43 +10,60 @@
 {% block content %}
 
 <div class="task-list-layout">
-    <div class="task-list-controls">
-
+    <div class="task-card">
         {% if categories %}
-            <div class="task-category-filter">
+            <nav class="task-category-filter" aria-label="Фильтр по категориям">
                 <span class="task-category-filter-title">Фильтр по категориям</span>
 
                 {% if is_history %}
-                    <a href="{% url 'tasks:history' %}" class="task-filter-item {% if not current_category %}task-filter-item-active{% endif %}">
+                    <a href="{% url 'tasks:history' %}?sort={{ current_sort }}" class="task-filter-item {% if not current_category %}task-filter-item-active{% endif %}">
                         Все задачи
                     </a>
                 {% else %}
-                    <a href="{% url 'tasks:list' %}" class="task-filter-item {% if not current_category %}task-filter-item-active{% endif %}">
+                    <a href="{% url 'tasks:list' %}?sort={{ current_sort }}" class="task-filter-item {% if not current_category %}task-filter-item-active{% endif %}">
                         Все задачи
                     </a>
                 {% endif %}
 
                 {% for category in categories %}
                     {% if is_history %}
-                        <a href="?category={{ category.id }}" class="task-filter-item {% if current_category and current_category.id == category.id %}task-filter-item-active{% endif %}">
+                        <a href="?category={{ category.id }}&amp;sort={{ current_sort }}" class="task-filter-item {% if current_category and current_category.id == category.id %}task-filter-item-active{% endif %}">
                             {{ category.name }}
                         </a>
                     {% else %}
-                        <a href="?category={{ category.id }}" class="task-filter-item {% if current_category and current_category.id == category.id %}task-filter-item-active{% endif %}">
+                        <a href="?category={{ category.id }}&amp;sort={{ current_sort }}" class="task-filter-item {% if current_category and current_category.id == category.id %}task-filter-item-active{% endif %}">
                             {{ category.name }}
                         </a>
                     {% endif %}
                 {% endfor %}
-            </div>
+            </nav>
         {% endif %}
-    </div>
 
-    <div class='task-card'>
-    {% if is_history %}
-        <h2>История выполненых задач {% if current_category %}в категории "{{ current_category.name}}"{% endif %}</h2>
-    {% else %}
-        <h2>Список задач {% if current_category %}в категории "{{ current_category.name}}"{% endif %}</h2>
-    {% endif %}
+        <div class="task-list-heading">
+            {% if is_history %}
+                <h2>История выполненых задач {% if current_category %}в категории "{{ current_category.name}}"{% endif %}</h2>
+            {% else %}
+                <h2>Список задач {% if current_category %}в категории "{{ current_category.name}}"{% endif %}</h2>
+            {% endif %}
+
+            <nav class="task-sort-controls" aria-label="Сортировка задач">
+                <span class="task-sort-title">Сортировка</span>
+                <div class="task-sort-options">
+                    <a href="?sort=created{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}"
+                       class="task-sort-item {% if current_sort == 'created' %}task-sort-item-active{% endif %}">
+                        Дата создания
+                    </a>
+                    <a href="?sort=deadline{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}"
+                       class="task-sort-item {% if current_sort == 'deadline' %}task-sort-item-active{% endif %}">
+                        Дедлайн
+                    </a>
+                    <a href="?sort=title{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}"
+                       class="task-sort-item {% if current_sort == 'title' %}task-sort-item-active{% endif %}">
+                        Название
+                    </a>
+                </div>
+            </nav>
+        </div>
 
     <ul class="task-list">
         {% for task in task_list %}
@@ -56,7 +73,7 @@
                         <h3>{{ task.title }}</h3>
                     </a>
                     {% if task.category %}
-                        <a href='?category={{ task.category.id }}' class="task-category">{{ task.category.name }}</a>
+                        <a href='?category={{ task.category.id }}&amp;sort={{ current_sort }}' class="task-category">{{ task.category.name }}</a>
                     {% endif %}
                 </div>
                 <span class="task-status task-status-{{ task.status }}">
@@ -106,7 +123,7 @@
 <div class="task-pagination">
 
     {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}" class="pagination-arrow">
+        <a href="?page={{ page_obj.previous_page_number }}&amp;sort={{ current_sort }}{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}" class="pagination-arrow">
             ←
         </a>
     {% endif %}
@@ -117,14 +134,14 @@
                 {{ page }}
             </span>
         {% else %}
-            <a href="?page={{ page }}{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}">
+            <a href="?page={{ page }}&amp;sort={{ current_sort }}{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}">
                 {{ page }}
             </a>
         {% endif %}
     {% endfor %}
 
     {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}" class="pagination-arrow">
+        <a href="?page={{ page_obj.next_page_number }}&amp;sort={{ current_sort }}{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}" class="pagination-arrow">
             →
         </a>
     {% endif %}
