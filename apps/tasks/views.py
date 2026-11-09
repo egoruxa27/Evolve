@@ -3,10 +3,11 @@ from django.views import View
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import IntegrityError, transaction
 
 from .models import Task, Category
 from .forms import CreateTaskForm, CategoryForm
-from .services import complete_task
+from .services import complete_task, create_category, CategoryLimitReached, MAX_CATEGORIES
 from ..mixins import RateLimitPostMixin
 
 
@@ -15,6 +16,19 @@ class UserFormKwargsMixin:
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+
+class CategoryUniqueErrorMixin:
+    def form_valid(self, form):
+        try:
+            with transaction.atomic():
+                return super().form_valid(form)
+        except IntegrityError as exc:
+            diagnostic = getattr(exc.__cause__, 'diag', None)
+            if getattr(diagnostic, 'constraint_name', None) != 'unique_category_per_user':
+                raise
+            form.add_error('name', 'У вас уже есть категория с таким названием.')
+            return self.form_invalid(form)
 
 
 class BaseTaskListView(LoginRequiredMixin, ListView):
@@ -144,8 +158,23 @@ class CreateCategoryView(
     ratelimit_message = 'Превышен лимит создания категорий'
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+        try:
+            with transaction.atomic():
+                self.object = create_category(
+                    user=self.request.user,
+                    name=form.cleaned_data['name'],
+                )
+        except CategoryLimitReached:
+            form.add_error(None, f'Нельзя создать больше {MAX_CATEGORIES} категорий')
+            return self.form_invalid(form)
+        except IntegrityError as exc:
+            diagnostic = getattr(exc.__cause__, 'diag', None)
+            if getattr(diagnostic, 'constraint_name', None) != 'unique_category_per_user':
+                raise
+            form.add_error('name', 'У вас уже есть категория с таким названием.')
+            return self.form_invalid(form)
+
+        return redirect(self.get_success_url())
 
 
 class DeleteCategoryView(LoginRequiredMixin, DeleteView):
@@ -155,10 +184,10 @@ class DeleteCategoryView(LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         return Category.objects.filter(user=self.request.user)
 
-
 class UpdateCategoryView(
     LoginRequiredMixin,
     UserFormKwargsMixin,
+    CategoryUniqueErrorMixin,
     UpdateView
 ):
     model = Category

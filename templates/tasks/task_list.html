@@ -106,7 +106,7 @@
 <div class="task-pagination">
 
     {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}" class="pagination-arrow">
+        <a href="?page={{ page_obj.previous_page_number }}{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}" class="pagination-arrow">
             ←
         </a>
     {% endif %}
@@ -117,14 +117,14 @@
                 {{ page }}
             </span>
         {% else %}
-            <a href="?page={{ page }}">
+            <a href="?page={{ page }}{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}">
                 {{ page }}
             </a>
         {% endif %}
     {% endfor %}
 
     {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="pagination-arrow">
+        <a href="?page={{ page_obj.next_page_number }}{% if current_category %}&amp;category={{ current_category.pk }}{% endif %}" class="pagination-arrow">
             →
         </a>
     {% endif %}

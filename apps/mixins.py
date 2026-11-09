@@ -4,6 +4,8 @@ from django_ratelimit.core import is_ratelimited
 
 
 class RateLimitPostMixin:
+    # Rules are (key, rate): key can be 'ip', 'user', or 'post:<field>'
+    # e.g. ('ip', '5/m')
     ratelimit_rules = ()
     ratelimit_group = None
     ratelimit_message = 'Слишком много попыток. Попробуйте позже.'

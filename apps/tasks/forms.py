@@ -3,8 +3,6 @@ from django import forms
 from .models import Task, Category
 
 
-MAX_CATEGORIES = 30
-
 class CreateTaskForm(forms.ModelForm):
     xp_reward = forms.IntegerField(
         label='Количество опыта за выполнения задачи',
@@ -37,14 +35,17 @@ class CategoryForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        name = cleaned_data.get('name')
 
-        if (
-            self.user
-            and self.instance._state.adding
-            and Category.objects.filter(user=self.user).count() >= MAX_CATEGORIES
-        ):
-            raise forms.ValidationError(
-                f'Нельзя создать больше {MAX_CATEGORIES} категорий'
-            )
+        if self.user and name:
+            duplicate = Category.objects.filter(
+                user=self.user,
+                name=name,
+            ).exclude(pk=self.instance.pk).exists()
+            if duplicate:
+                self.add_error(
+                    'name',
+                    'У вас уже есть категория с таким названием.',
+                )
 
         return cleaned_data

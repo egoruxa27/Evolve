@@ -1,5 +1,21 @@
 from django.utils import timezone
 
+from .models import Category
+
+
+MAX_CATEGORIES = 30
+
+
+class CategoryLimitReached(Exception):
+    pass
+
+
+def create_category(*, user, name):
+    if Category.objects.filter(user=user).count() >= MAX_CATEGORIES:
+        raise CategoryLimitReached
+    return Category.objects.create(user=user, name=name)
+
+
 # check for race conditions problem
 def complete_task(task, user):
     if task.status in (

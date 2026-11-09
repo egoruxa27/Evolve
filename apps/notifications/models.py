@@ -21,7 +21,7 @@ class TelegramAccount(models.Model):
         verbose_name_plural = 'Telegram-аккаунты'
 
     def __str__(self):
-        return self.user
+        return str(self.user)
 
 
 class Notification(models.Model):
@@ -62,4 +62,4 @@ class Notification(models.Model):
         ]
 
     def __str__(self):
-        return self.task
+        return str(self.task)

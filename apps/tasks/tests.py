@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.test import TestCase, override_settings
 
 from .models import Category, Task
+from .forms import CategoryForm
 from .services import complete_task
 
 
@@ -70,7 +71,7 @@ class TestServices(TestCase):
 
         complete_task(task, self.user)
 
-        self.user.refresh_from_db
+        self.user.refresh_from_db()
 
         self.assertEqual(self.user.level, 2)
         self.assertEqual(self.user.xp_amount, 5)
@@ -130,6 +131,43 @@ class TestTaskAccess(TestCase):
         )
 
 
+class TestCategoryForm(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email='category@test.com',
+            nickname='category-user',
+        )
+
+    def test_rejects_duplicate_name_for_same_user(self):
+        Category.objects.create(user=self.user, name='Work')
+
+        form = CategoryForm(data={'name': 'Work'}, user=self.user)
+
+        self.assertFalse(form.is_valid())
+        self.assertIn('name', form.errors)
+
+    def test_allows_keeping_name_when_editing_category(self):
+        category = Category.objects.create(user=self.user, name='Work')
+
+        form = CategoryForm(
+            data={'name': 'Work'},
+            instance=category,
+            user=self.user,
+        )
+
+        self.assertTrue(form.is_valid())
+
+    def test_allows_another_users_category_name(self):
+        other = User.objects.create_user(
+            email='other-category@test.com', nickname='other-category',
+        )
+        Category.objects.create(user=other, name='Work')
+
+        form = CategoryForm(data={'name': 'Work'}, user=self.user)
+
+        self.assertTrue(form.is_valid())
+
+
 class TestTaskRateLimit(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -167,7 +205,7 @@ class TestTaskRateLimit(TestCase):
     def test_create_category_ratelimit(self):
         url = reverse('tasks:create_category')
 
-        for index in range(25):
+        for index in range(31):
             data = {'name': f'Test category {index}'}
             self.client.post(url, data)
 
