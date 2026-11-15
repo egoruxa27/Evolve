@@ -15,6 +15,15 @@ services:
     volumes:
       - media_data:/app/media
 
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "apps.notifications.bot"]
+    env_file:
+      - .env
+    restart: unless-stopped
+
   db:
     image: postgres:16
     container_name: evolve_db

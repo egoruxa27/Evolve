@@ -11,7 +11,7 @@ class TelegramAccount(models.Model):
         related_name='telegram_account',
         on_delete=models.CASCADE,
     )
-    telegram_chat_id = models.BigIntegerField(
+    telegram_user_id = models.BigIntegerField(
         'ID чата Telegram',
         unique=True,
     )

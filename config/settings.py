@@ -9,13 +9,10 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-import os
+from os import getenv
 from pathlib import Path
 
-from dotenv import load_dotenv
 from celery.schedules import schedule
-
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY',)
+SECRET_KEY = getenv('SECRET_KEY',)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+DEBUG = getenv('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
@@ -85,9 +82,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'NAME': getenv('POSTGRES_DB'),
+        'USER': getenv('POSTGRES_USER'),
+        'PASSWORD': getenv('POSTGRES_PASSWORD'),
         'HOST': 'db',
         'PORT': '5432'
     }
@@ -100,12 +97,12 @@ CACHES = {
     },
 }
 
-CELERY_BEAT_SCHEDULE = {
-    "check-task-deadlines-every-5-minutes": {
-        "task": "apps.tasks.celery_tasks.notify_upcoming_deadlines",
-        "schedule": 300.0,
-    },
-}
+# CELERY_BEAT_SCHEDULE = {
+#     "check-task-deadlines-every-5-minutes": {
+#         "task": "apps.tasks.celery_tasks.notify_upcoming_deadlines",
+#         "schedule": 300.0,
+#     },
+# }
 
 
 # Password validation
