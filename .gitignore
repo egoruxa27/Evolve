@@ -13,6 +13,9 @@ __pycache__/
 db.sqlite3
 *.log
 
+# Celery
+celerybeat-schedule*
+
 # IDE
 .vscode/
 .idea/
@@ -23,3 +26,6 @@ Thumbs.db
 
 # Media
 media/
+celerybeat-schedule
+celerybeat-schedule-shm
+celerybeat-schedule-wal

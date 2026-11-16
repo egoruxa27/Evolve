@@ -16,7 +16,7 @@ def create_category(*, user, name):
     return Category.objects.create(user=user, name=name)
 
 
-# check for race conditions problem
+# fix race conditions problem
 def complete_task(task, user):
     if task.status in (
         task.Status.COMPLETED,

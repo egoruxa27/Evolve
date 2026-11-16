@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.utils import timezone
 from django.urls import reverse
 from django.test import TestCase, override_settings
@@ -227,8 +228,13 @@ class TestCategoryForm(TestCase):
         self.assertTrue(form.is_valid())
 
 
+@override_settings(
+    CACHES={'default': {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}},
+)
 class TestTaskRateLimit(TestCase):
     def setUp(self):
+        cache.clear()
+        self.addCleanup(cache.clear)
         self.user = User.objects.create_user(
                     email='user@test.com',
                     nickname='user',

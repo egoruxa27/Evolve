@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+загрузилось
+{% if code %}
+    {{ code }}
+{% else %}
+    <form method='POST' novalidate>
+        {% csrf_token %}
+        <button type='submit'>
+            Сгенерировать код
+        </button>
+    </form>
+{% endif %}
+{% endblock %}

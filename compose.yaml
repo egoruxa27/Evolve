@@ -19,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: ["python", "-m", "apps.notifications.bot"]
+    command: ["python", "-m", "apps.telegram.bot"]
     env_file:
       - .env
     restart: unless-stopped

@@ -1,4 +1,5 @@
 ﻿from django.contrib.auth import authenticate, get_user_model
+from django.core.cache import cache
 from django.db import IntegrityError
 from django.test import TestCase, override_settings
 from django.urls import reverse
@@ -206,7 +207,14 @@ class TestUserAuthentication(TestCase):
         self.assertIsNotNone(user)
 
 
+@override_settings(
+    CACHES={'default': {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}},
+)
 class TestUserRateLimit(TestCase):
+    def setUp(self):
+        cache.clear()
+        self.addCleanup(cache.clear)
+
     @override_settings(RATELIMIT_ENABLE=True)
     def test_register_rate_limit(self):
         url = reverse('users:register')
@@ -291,6 +299,3 @@ class TestUserRateLimit(TestCase):
         self.assertEqual(User.objects.count(), 1)
         user.refresh_from_db()
         self.assertEqual(user.password, password_hash)
-
-
-# TODO: Не отчищается кэш после тестов на ratelimit

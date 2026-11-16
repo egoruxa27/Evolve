@@ -17,6 +17,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('apps.users.urls')),
     path('tasks/', include('apps.tasks.urls')),
+    path('telegram/', include('apps.telegram.urls')),
 ]
 
 if settings.DEBUG:

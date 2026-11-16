@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'apps.tasks',
     'apps.users',
     'apps.notifications',
+    'apps.telegram',
     'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',

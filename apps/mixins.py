@@ -27,8 +27,8 @@ class RateLimitPostMixin:
                 limited = True
         return limited
 
-    def post(self, request, *args, **kwargs):
-        if self.is_rate_limited(request):
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'POST' and self.is_rate_limited(request):
             messages.error(request, self.ratelimit_message)
             return redirect(self.ratelimit_redirect_url or request.path)
-        return super().post(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
